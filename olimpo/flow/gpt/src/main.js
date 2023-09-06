@@ -7,18 +7,24 @@ import {
 import {
   ChatContainer,
   getChatContainerStyles,
-} from "./components/chat/chatContainer";
+} from "./components/chat/container";
 import {
   chatMessage,
   getChatMessageStyles,
-} from "./components/chat/chatMessage";
-import { ChatInput, getChatInputStyles } from "./components/chat/chatInput";
+} from "./components/chat/chatMessage/chatMessage";
+import {
+  ChatInput,
+  getChatInputStyles,
+} from "./components/chat/chatInput/chatInput";
 import { Box } from "./components/box/box";
 
 import { appConfig } from "./app-state/config";
 import { theme } from "./app-state/theme";
 import { addInlineStylesToElement } from "./utils/addInlineStyles";
 import { CustomScrollBar } from "./components/scrollbar/customScrollbar";
+import { IconButton } from "./components/buttons/icon/icon";
+import { Dropdown } from "./components/dropdownMenu/dropdown";
+import { FabButton } from "./components/buttons/filled/filledButton";
 
 export default class Chatbot {
   constructor({ chatflow, theme: customTheme }) {
@@ -36,9 +42,8 @@ export default class Chatbot {
       Object.keys(colors).forEach(
         (color) => (theme.colors[color] = colors[color])
       );
-    
-    if(icon)
-    theme.customIcon = icon
+
+    if (icon) theme.customIcon = icon;
   }
 
   init() {
@@ -49,7 +54,10 @@ export default class Chatbot {
       chatMessage,
       ChatInput,
       Box,
-      CustomScrollBar
+      CustomScrollBar,
+      IconButton,
+      Dropdown,
+      FabButton
     );
 
     const widgetContainer = new WidgetContainer();
@@ -60,7 +68,7 @@ export default class Chatbot {
         getBubbleIconTogglerStyles(theme),
         getChatMessageStyles(theme),
         getChatInputStyles(theme),
-        getChatContainerStyles(),
+        getChatContainerStyles(theme),
       ],
     });
 

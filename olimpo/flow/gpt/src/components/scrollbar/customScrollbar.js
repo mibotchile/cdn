@@ -1,5 +1,3 @@
-import { ChatContainer } from "../chat/chatContainer";
-
 export class CustomScrollBar extends HTMLElement {
   container;
   constructor(containerElement) {
@@ -135,7 +133,6 @@ export class CustomScrollBar extends HTMLElement {
     });
     document.addEventListener("mouseup", () => {
       isDragging = false;
-      // remove prevent dragging highlights
       this.preventContentHighlight("add");
     });
     document.addEventListener("mousemove", (e) => {
@@ -147,7 +144,6 @@ export class CustomScrollBar extends HTMLElement {
     });
   }
 
-  // prevent content highlight when dragging the thumb
   preventContentHighlight(action) {
     if (action) {
       this.targetEl.classList.add("prevent-scroll");

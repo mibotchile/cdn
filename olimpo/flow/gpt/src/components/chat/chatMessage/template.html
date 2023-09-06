@@ -1,0 +1,15 @@
+{{ @if (it.type === "userMessage") }}
+<onbotgo-box class="from-user message"> {{it.message}} </onbotgo-box>
+{{ #elif (it.type === "LoadingMessage") }}
+<onbotgo-box class="loading-api-message message">
+  <onbotgo-box class="dot"></onbotgo-box>
+  <onbotgo-box class="dot"></onbotgo-box>
+  <onbotgo-box class="dot"></onbotgo-box>
+  <onbotgo-box class="bg-semi-transp"></onbotgo-box>
+</onbotgo-box>
+{{ #else }}
+<onbotgo-box class="from-chatbot message">
+  {{it.message}}
+  <onbotgo-box class="bg-semi-transp"></onbotgo-box>
+</onbotgo-box>
+{{ /if}}

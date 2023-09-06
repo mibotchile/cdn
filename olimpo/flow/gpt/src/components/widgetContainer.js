@@ -1,6 +1,6 @@
 import { theme } from "../app-state/theme";
 import { BubbleIconToggler } from "./bubble/bubbleIconToggler";
-import { ChatContainer } from "./chat/chatContainer";
+import { ChatContainer } from "./chat/container";
 
 import { WebComponent } from "./webComponent";
 

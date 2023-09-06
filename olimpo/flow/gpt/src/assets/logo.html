@@ -1,313 +1,20 @@
-var T = Object.defineProperty;
-var B = (o, s, t) => s in o ? T(o, s, { enumerable: !0, configurable: !0, writable: !0, value: t }) : o[s] = t;
-var r = (o, s, t) => (B(o, typeof s != "symbol" ? s + "" : s, t), t);
-class H {
-  constructor() {
-    r(this, "typography", {
-      primary: "'Trebuchet MS', sans-serif"
-    });
-    r(this, "colors", { primary: "rgb(59, 129, 246)" });
-    r(this, "defaultIcon", `
-  <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-  `);
-    r(this, "customIcon", "");
-  }
-}
-const c = new H();
-class d extends HTMLElement {
-  setStyles(s) {
-    Object.keys(s).forEach((e) => {
-      this.style[e] = s[e];
-    });
-  }
-}
-const I = "onbotgo-box";
-class l extends d {
-  constructor() {
-    super(), this.setStyles({ display: "inline-block", width: "100%" });
-  }
-}
-l.tag = I;
-const u = "onbotgo-bubble";
-class x extends d {
-  constructor(s) {
-    super(), this.innerHTML = s, this.innerHTML = this.isIconValid(s) ? s : c.defaultIcon;
-  }
-  isIconValid(s) {
-    var e, i, n, a;
-    if (!s)
-      return !1;
-    const t = new l();
-    if (t.innerHTML = s, !["svg", "i", "img"].includes((i = (e = t.children[0]) == null ? void 0 : e.tagName) == null ? void 0 : i.toLowerCase()))
-      return console.error(`node is not valid.
- allowed nodes: "svg", "i", "img"`), !1;
-    for (let C = 0; C < t.childNodes.length; C++) {
-      const h = (a = (n = t.childNodes[C]) == null ? void 0 : n.tagName) == null ? void 0 : a.toLowerCase();
-      if (["script"].includes(h))
-        return console.error(`Element "<${h}>" is not valid.`), !1;
-    }
-    return !0;
-  }
-}
-x.tag = u;
-const L = (o) => ({
-  [u]: {
-    display: "grid",
-    "place-items": "center",
-    width: "48px",
-    height: "48px",
-    "background-color": o.colors.primary,
-    fill: "transparent",
-    "border-radius": "100px",
-    transition: "transform 0.1s linear"
-  },
-  [`${u}:hover`]: {
-    transform: "scale(1.1)"
-  },
-  [`${u} > svg`]: {
-    width: "28px",
-    height: "28px",
-    stroke: "white",
-    "stroke-width": "2px",
-    "border-image-width": "2"
-  }
-}), y = "onbotgo-chatinput";
-class w extends d {
-  constructor() {
-    super();
-    r(this, "defaultStyles", {
-      height: "8%",
-      width: "100%",
-      display: "grid",
-      gridTemplateColumns: "10fr 1fr",
-      alignItems: "center",
-      boxShadow: "0 2px 6px -1px rgba(0,0,0,.1)"
-    });
-    r(this, "input", document.createElement("input"));
-    r(this, "sendIcon", new l());
-    this.setStyles(this.defaultStyles), this.input, this.input.style.maxWidth = "calc(100vw - 129px - 0px)", this.input.style.fontFamily = c.typography.primary, this.input.type = "text", this.input.placeholder = "Escribe un mensaje", this.sendIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="19px" class="send-icon flex " ><path d="M476.59 227.05l-.16-.07L49.35 49.84A23.56 23.56 0 0027.14 52 24.65 24.65 0 0016 72.59v113.29a24 24 0 0019.52 23.57l232.93 43.07a4 4 0 010 7.86L35.53 303.45A24 24 0 0016 327v113.31A23.57 23.57 0 0026.59 460a23.94 23.94 0 0013.22 4 24.55 24.55 0 009.52-1.93L476.4 285.94l.19-.09a32 32 0 000-58.8z"></path></svg>', this.appendChild(this.input), this.appendChild(this.sendIcon);
-  }
-  onSubmit(t) {
-    this.sendIcon.onclick = (e) => t(this.input.value), this.input.onkeydown = (e) => {
-      ["13", "Enter"].includes(e.key) && (t(this.input.value), this.input.value = "");
-    };
-  }
-}
-w.tag = y;
-const $ = (o) => ({
-  [`${y} > input`]: {
-    "border-radius": "6px",
-    outline: "none",
-    border: "none",
-    height: "100%",
-    padding: "0 10px"
-  },
-  [`${y} svg`]: {
-    cursor: "pointer",
-    fill: o.colors.primary
-  }
-}), p = "onbotgo-chatmessage";
-class v extends d {
-  constructor(t) {
-    super();
-    r(this, "messageBox", new l());
-    this.setStyles({
-      width: "100%",
-      display: "flex",
-      minHeight: "max(45px, fit-content)",
-      justifyContent: t.type === "userMessage" ? "flex-end" : "flex-start"
-    });
-    const e = {
-      userMessage: "from-user",
-      apiMessage: "from-chatbot",
-      loadingMessage: "loading-api-message"
-    };
-    this.messageBox.setStyles({
-      width: "fit-content",
-      height: "fit-content",
-      borderRadius: "6px",
-      alignItems: "center",
-      padding: "15px 15px",
-      fontFamily: c.typography.primary,
-      color: t.type === "userMessage" ? "white" : "black"
-    }), this.messageBox.classList.add(e[t.type]), t.type === "userMessage" ? this.messageBox.innerText = t.message : t.type === "loadingMessage" ? (this.messageBox.appendChild(this.loadingMessageElement), this.messageBox.appendChild(this.createSoftBackgroundColor())) : (this.messageBox.innerHTML = t.message, this.messageBox.appendChild(this.createSoftBackgroundColor())), this.appendChild(this.messageBox);
-  }
-  get loadingMessageElement() {
-    const t = new l(), e = new l(), i = new l(), n = new l();
-    return t.setStyles({
-      alignItems: "center",
-      display: "flex",
-      height: "17px",
-      gap: "5px"
-    }), [e, i, n].forEach(
-      (a) => a.setStyles({
-        transform: "translateY(2px)",
-        backgroundColor: c.colors.primary,
-        borderRadius: "50px",
-        height: "10px",
-        verticalAlign: "middle",
-        width: "10px",
-        display: "inline-block"
-      })
-    ), [e, i, n].forEach(
-      (a, C) => console.log(C, C * 200) || a.animate([{ transform: "translateY(-5px)", opacity: 0.2 }], {
-        direction: "alternate",
-        delay: C * 200,
-        duration: 500,
-        iterations: 1 / 0
-      })
-    ), t.appendChild(i), t.appendChild(n), t.appendChild(e), t;
-  }
-  createSoftBackgroundColor() {
-    const t = new l();
-    return t.classList.add("bg-semi-transp"), t;
-  }
-}
-v.tag = p;
-const _ = (o) => ({
-  [`${p} > .from-chatbot`]: {
-    width: "100%",
-    content: "",
-    overflow: "hidden",
-    position: "relative",
-    "max-width": "75%",
-    "z-index": 1
-  },
-  [`${p} .bg-semi-transp`]: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    opacity: ".1",
-    top: 0,
-    "z-index": "-1",
-    left: 0,
-    "background-color": o.colors.primary
-  },
-  [`${p} > .from-user`]: {
-    "margin-right": "15px",
-    "max-width": "70%",
-    "background-color": o.colors.primary
-  },
-  [`${p} > .loading-api-message`]: {
-    position: "relative",
-    "z-index": 1,
-    overflow: "hidden"
-  }
-});
-class F {
-  constructor() {
-    r(this, "gpt_url", "https://api-whatsapp-dev.mibot.cl:7070");
-    r(this, "chatflowID", "");
-  }
-}
-const b = new F(), z = async (o) => await fetch(
-  `${b.gpt_url}/v1/internal-prediction/${b.chatflowID}`,
-  {
-    headers: {
-      "Content-Type": "application/json"
-    },
-    method: "POST",
-    body: JSON.stringify(o)
-  }
-).then((s) => s.json());
-class S extends HTMLElement {
-  constructor(t) {
-    super();
-    r(this, "container");
-  }
-  connectedCallback() {
-    this.attachShadow({ mode: "open" }), this.targetElId = this.dataset.targetId, this.trackColor = this.dataset.trackColor || "#f2f2f2", this.trackWidth = this.dataset.trackWidth || "6px", this.thumbColor = this.dataset.thumbColor || "#c1c1c1", this.targetEl = document.querySelector("#onbotgo-messageContainer");
-    const t = document.createElement("style");
-    if (t.textContent = `
-        .custom-scrollbar {
-          width: ${this.trackWidth};
-          height: 100%;
-          position: absolute;
-          top: 0;
-          right: 0;
-        }
-  
-        .custom-scrollbar__track {
-          width: 100%;
-          height: 100%;
-          background-color: ${this.trackColor};
-        }
-  
-        .custom-scrollbar__thumb {
-          width: 100%;
-          background-color: ${this.thumbColor};
-          border-radius: ${this.trackWidth};
-          position: absolute;
-          top: 0;
-          animation: top 0.25s ease-in;
-  
-        }
-  
-        .custom-scrollbar__thumb:hover {
-          background-color: red;
-        }
-      `, this.shadowRoot.appendChild(t), !this.targetEl) {
-      console.warn(
-        `CustomScrollBar: target element with id "${this.targetElId}" not found`,
-        this,
-        this.dataset.targetId
-      );
-      return;
-    }
-    new IntersectionObserver((i) => {
-      i.forEach((n) => {
-        n.isIntersecting && (this.setTargetElCSS(), this.setScrollThumbHeight());
-      });
-    }).observe(this.targetEl), this.shadowRoot.innerHTML += `
-        <div class="custom-scrollbar">
-          <div class="custom-scrollbar__track">
-            <div class="custom-scrollbar__thumb"></div>
-          </div>
-        </div>
-      `, this.targetEl.addEventListener("scroll", () => {
-      this.moveScrollThumb();
-    });
-  }
-  moveScrollThumb() {
-    const t = this.shadowRoot.querySelector(
-      ".custom-scrollbar__thumb"
-    ), e = this.shadowRoot.querySelector(
-      ".custom-scrollbar__track"
-    ).offsetHeight, i = this.targetEl.scrollTop / this.targetEl.scrollHeight * e;
-    t.style.top = `${i}px`;
-  }
-  setTargetElCSS() {
-    this.targetEl.style.overflowY = "scroll", this.targetEl.style.position = "relative", this.targetEl.style["-ms-overflow-style"] = "none", this.targetEl.style.scrollbarWidth = "none";
-  }
-  setScrollThumbHeight() {
-    const t = this.shadowRoot.querySelector(
-      ".custom-scrollbar__track"
-    ), e = this.shadowRoot.querySelector(
-      ".custom-scrollbar__thumb"
-    ), i = t.offsetHeight, n = this.targetEl.offsetHeight, a = this.targetEl.scrollHeight, C = n / a * i;
-    e.style.height = `${C}px`;
-    let h = !1, m;
-    e.addEventListener("mousedown", (g) => {
-      h = !0, m = g.clientY, this.preventContentHighlight("remove");
-    }), document.addEventListener("mouseup", () => {
-      h = !1, this.preventContentHighlight("add");
-    }), document.addEventListener("mousemove", (g) => {
-      if (!h)
-        return;
-      const M = g.clientY - m;
-      m = g.clientY, this.targetEl.scrollTop += M * (a / i);
-    });
-  }
-  // prevent content highlight when dragging the thumb
-  preventContentHighlight(t) {
-    t ? this.targetEl.classList.add("prevent-scroll") : this.targetEl.classList.add("prevent-scroll");
-  }
-}
-S.tag = "onbotgo-customscrollbar";
-const j = `<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-width="18px" viewBox="0 0 750 750" enable-background="new 0 0 750 750" xml:space="preserve">
-<path fill="#FFFFFF" opacity="1.000000" stroke="none" 
-d="
+<svg
+  version="1.1"
+  id="Layer_1"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  x="0px"
+  y="0px"
+  width="18px"
+  viewBox="0 0 750 750"
+  enable-background="new 0 0 750 750"
+  xml:space="preserve"
+>
+  <path
+    fill="#FFFFFF"
+    opacity="1.000000"
+    stroke="none"
+    d="
 M1.000000,275.000000 
 C1.000000,183.333328 1.000000,92.166664 1.000000,1.000000 
 C251.000000,1.000000 501.000000,1.000000 751.000000,1.000000 
@@ -338,9 +45,13 @@ C270.770203,45.011021 179.506958,45.011021 88.000000,45.011021
 C88.000000,47.350853 88.000000,49.160931 88.000000,50.971008 
 C88.000000,91.469856 87.983521,131.968719 88.006821,172.467545 
 C88.018806,193.296692 88.101700,214.125809 88.022148,235.872009 
-z"/>
-<path fill="transparent" opacity="1.000000" stroke="none" 
-d="
+z"
+  />
+  <path
+    fill="transparent"
+    opacity="1.000000"
+    stroke="none"
+    d="
 M660.836304,269.007935 
 C660.890808,270.336334 660.993103,271.664703 660.993164,272.993103 
 C661.000488,417.408081 661.000000,561.823059 661.000000,706.238037 
@@ -447,9 +158,13 @@ C444.881744,226.726791 420.104919,213.826996 395.409485,200.775330
 C389.522583,197.664078 383.451447,194.816299 377.910095,191.170822 
 C374.946442,189.221176 372.921173,189.248917 370.123901,190.941299 
 C360.003204,197.064438 349.788422,203.032059 339.001434,209.498001 
-z"/>
-<path fill="#3B88F4" opacity="1.000000" stroke="none" 
-d="
+z"
+  />
+  <path
+    fill="#3B88F4"
+    opacity="1.000000"
+    stroke="none"
+    d="
 M88.093430,403.448517 
 C88.439163,401.278290 88.959534,399.572174 88.963676,397.864838 
 C89.018204,375.366241 89.000000,352.867493 89.000000,330.368774 
@@ -482,9 +197,13 @@ C146.690262,560.514832 128.040314,550.794678 111.546669,537.709595
 C102.050766,530.176147 94.851891,520.595764 92.008911,508.416321 
 C90.585037,502.316437 89.431969,496.153351 88.156425,490.018829 
 C88.113655,461.316589 88.070885,432.614319 88.093430,403.448517 
-z"/>
-<path fill="#32A850" opacity="1.000000" stroke="none" 
-d="
+z"
+  />
+  <path
+    fill="#32A850"
+    opacity="1.000000"
+    stroke="none"
+    d="
 M383.572601,45.088341 
 C407.162476,50.987228 426.904327,63.836277 447.108307,75.683662 
 C466.232117,86.897644 485.174622,98.420616 504.289001,109.650887 
@@ -514,9 +233,13 @@ C183.551834,143.089035 208.243027,129.671341 232.604355,115.678505
 C254.099243,103.332130 275.279449,90.439117 296.653839,77.881470 
 C317.957275,65.365509 338.669800,51.629372 362.959229,45.153877 
 C369.675323,45.109764 376.391418,45.065651 383.572601,45.088341 
-z"/>
-<path fill="#EA4033" opacity="1.000000" stroke="none" 
-d="
+z"
+  />
+  <path
+    fill="#EA4033"
+    opacity="1.000000"
+    stroke="none"
+    d="
 M660.906372,268.554474 
 C660.557556,270.557159 660.050049,272.104523 660.037415,273.655884 
 C659.961853,282.985565 660.106140,292.317657 659.977661,301.646179 
@@ -551,9 +274,13 @@ C606.450439,168.101990 621.546448,175.829224 634.747131,186.461273
 C647.470215,196.708603 655.518433,210.197495 657.857422,226.432556 
 C659.333679,236.679214 659.436462,247.123749 660.495850,257.735474 
 C660.883118,261.361298 660.929810,264.731171 660.906372,268.554474 
-z"/>
-<path fill="transparent" opacity="1.000000" stroke="none" 
-d="
+z"
+  />
+  <path
+    fill="transparent"
+    opacity="1.000000"
+    stroke="none"
+    d="
 M88.083824,490.483582 
 C89.431969,496.153351 90.585037,502.316437 92.008911,508.416321 
 C94.851891,520.595764 102.050766,530.176147 111.546669,537.709595 
@@ -567,9 +294,13 @@ C337.826447,710.893311 336.664856,710.993225 335.503296,710.993347
 C254.416046,711.000671 173.328812,711.000000 92.241562,711.000000 
 C90.946762,711.000000 89.651970,711.000000 88.011223,711.000000 
 C88.011223,637.380310 88.011223,564.164307 88.083824,490.483582 
-z"/>
-<path fill="transparent" opacity="1.000000" stroke="none" 
-d="
+z"
+  />
+  <path
+    fill="transparent"
+    opacity="1.000000"
+    stroke="none"
+    d="
 M362.496338,45.082451 
 C338.669800,51.629372 317.957275,65.365509 296.653839,77.881470 
 C275.279449,90.439117 254.099243,103.332130 232.604355,115.678505 
@@ -580,9 +311,13 @@ C88.101700,214.125809 88.018806,193.296692 88.006821,172.467545
 C87.983521,131.968719 88.000000,91.469856 88.000000,50.971008 
 C88.000000,49.160931 88.000000,47.350853 88.000000,45.011021 
 C179.506958,45.011021 270.770203,45.011021 362.496338,45.082451 
-z"/>
-<path fill="#F8BF00" opacity="1.000000" stroke="none" 
-d="
+z"
+  />
+  <path
+    fill="#F8BF00"
+    opacity="1.000000"
+    stroke="none"
+    d="
 M339.305298,209.278198 
 C349.788422,203.032059 360.003204,197.064438 370.123901,190.941299 
 C372.921173,189.248917 374.946442,189.221176 377.910095,191.170822 
@@ -616,214 +351,32 @@ C324.265228,324.824219 313.268433,320.300476 304.278931,324.335938
 C296.468933,327.841919 291.660919,337.514313 296.220612,347.394775 
 C299.365784,354.209961 307.299225,357.696686 314.529236,356.081970 
 C321.055634,354.624481 325.089722,350.462372 327.955780,343.822937 
-z"/>
-<path fill="#FFFFFF" opacity="1.000000" stroke="none" 
-d="
+z"
+  />
+  <path
+    fill="#FFFFFF"
+    opacity="1.000000"
+    stroke="none"
+    d="
 M435.116150,322.998901 
 C447.804291,323.684448 452.661957,330.440094 452.819550,339.182343 
 C453.002350,349.320312 446.404022,355.326660 436.553192,356.885986 
 C429.368927,358.023254 420.433807,350.098267 419.074524,341.828735 
 C418.105682,335.934540 421.965851,325.362366 430.927155,323.934601 
 C432.196838,323.732269 433.432404,323.315918 435.116150,322.998901 
-z"/>
-<path fill="#FFFFFE" opacity="1.000000" stroke="none" 
-d="
+z"
+  />
+  <path
+    fill="#FFFFFE"
+    opacity="1.000000"
+    stroke="none"
+    d="
 M327.856506,344.228943 
 C325.089722,350.462372 321.055634,354.624481 314.529236,356.081970 
 C307.299225,357.696686 299.365784,354.209961 296.220612,347.394775 
 C291.660919,337.514313 296.468933,327.841919 304.278931,324.335938 
 C313.268433,320.300476 324.265228,324.824219 327.298553,334.016357 
 C328.292847,337.029419 327.779602,340.539917 327.856506,344.228943 
-z"/>
-</svg>`, k = "onbotgo-chatcontainer";
-class E extends d {
-  constructor() {
-    super();
-    r(this, "messagesHistory", [
-      {
-        message: "¡Hola! ¿En qué puedo ayudarte hoy?",
-        type: "apiMessage"
-      }
-    ]);
-    r(this, "scrollableContainer", new l());
-    r(this, "messagesContainer", new l());
-    r(this, "scrollBar", new S());
-    r(this, "chatInput", new w());
-    r(this, "footer", new l());
-    r(this, "defaultStyles", {
-      bottom: "60px",
-      right: "10px",
-      position: "absolute",
-      display: "flex",
-      boxShadow: "rgba(0, 0, 0, 0.16) 0px 5px 40px",
-      flexDirection: "column",
-      width: "400px",
-      gap: "10px",
-      maxWidth: "calc(100vw - 90px)",
-      maxHeight: "704px",
-      height: "70vh",
-      backgroundColor: "white",
-      borderRadius: "8px",
-      padding: "10px 20px"
-    });
-    this.classList.add("hidden"), this.setStyles(this.defaultStyles), this.messagesContainer.id = "onbotgo-messageContainer", this.scrollBar["data-target-id"] = "scrollableElement", this.scrollBar.style.visibility = "hidden", this.scrollableContainer.appendChild(this.scrollBar), this.scrollableContainer.appendChild(this.messagesContainer), this.scrollableContainer.setStyles({
-      height: "85%",
-      position: "relative",
-      overflow: "hidden",
-      marginBottom: "15px"
-    }), this.messagesContainer.setStyles({
-      height: "calc(100% - 1.5rem)",
-      position: "relative",
-      display: "flex",
-      flexDirection: "column",
-      gap: "15px",
-      position: "relative",
-      padding: "1rem"
-    }), this.chatInput.onSubmit(this.onSubmit.bind(this)), this.footer.setStyles({
-      width: "100%",
-      color: "#a1a1a1",
-      display: "flex",
-      alignItems: "center",
-      fontFamily: c.typography.primary,
-      fontSize: "10px",
-      justifyContent: "flex-end",
-      gap: "5px"
-    }), this.footer.innerHTML = `Powered by ONBOTGO LLC. ${j}`, this.appendChild(this.scrollableContainer), this.appendChild(this.chatInput), this.appendChild(this.footer), this.renderMessages(this.messagesHistory);
-  }
-  onSubmit(t) {
-    if (t = t.trim(), !t)
-      return;
-    const e = structuredClone(this.messagesHistory);
-    e.splice(0, 1);
-    const i = {
-      history: e,
-      question: t
-    };
-    this.addMessages([{ message: t, type: "userMessage" }]), this.renderMessages([{ type: "loadingMessage" }]), this.updateScrollbar(), z(i).then((n) => {
-      if (!n.success)
-        throw new Error(n.msg);
-      n.data.process.length && n.data.process.forEach((a) => {
-        this.addMessages([
-          {
-            type: a.role,
-            name: a.name,
-            content: a.content
-          }
-        ]);
-      }), this.addMessages([
-        { message: n.data.answer, type: "apiMessage" }
-      ]);
-    }).catch((n) => console.log(n)).finally(() => {
-      var n;
-      (n = this.messagesContainer.querySelectorAll(".loading-api-message")) == null || n.forEach((a) => a.remove()), this.updateScrollbar();
-    });
-  }
-  toggle() {
-    this.classList.contains("hidden") ? (this.scrollBar.style.visibility = "hidden", this.classList.remove("hidden")) : (this.classList.add("hidden"), this.messagesContainer.scrollTop > 0 && (this.scrollBar.style.visibility = "visible"));
-  }
-  renderMessages(t) {
-    t.forEach(
-      (e) => !["dataMessage"].includes(e.type) && this.messagesContainer.appendChild(new v(e))
-    );
-  }
-  addMessages(t, { updateScrollbar: e } = { updateScrollbar: !1 }) {
-    this.messagesHistory = this.messagesHistory.concat(t), this.renderMessages(t), e && this.updateScrollbar();
-  }
-  updateScrollbar() {
-    this.scrollBar.setScrollThumbHeight(), this.messagesContainer.scrollTo(0, this.messagesContainer.scrollHeight), this.messagesContainer.scrollTop > 0 && this.scrollBar.style.visibility === "hidden" && (this.scrollBar.style.visibility = "visible");
-  }
-}
-const O = () => ({
-  [`${k}.hidden`]: {
-    visibility: "hidden"
-  }
-});
-E.tag = k;
-class f extends d {
-  constructor() {
-    super();
-    r(this, "componentStyles", {
-      display: "inline-block",
-      position: "absolute",
-      bottom: "20px",
-      right: "20px"
-    });
-    const t = new x(c.customIcon), e = new E();
-    t.onclick = () => e.toggle(), this.appendChild(t), this.appendChild(e), this.setStyles(this.componentStyles);
-  }
-  connectedCallback() {
-  }
-}
-f.tag = "onbotgo-chatbot";
-function A({ element: o, styles: s }) {
-  const t = s.reduce(
-    (n, a) => ({
-      ...n,
-      ...a
-    }),
-    {}
-  ), e = document.createElement("style"), i = W(t);
-  e.innerHTML = i, o.prepend(e);
-}
-function R(o, s = {}) {
-  const t = Object.keys(s), e = Object.values(s);
-  let i = `${o}{`;
-  return t.forEach((n, a) => i += `${n}:${e[a]};`), i + "}";
-}
-function q(o, s = {}) {
-  const t = Object.keys(s), e = Object.values(s);
-  let i = `${o}{`;
-  return t.forEach((n, a) => i += `${n}${e[a]};`), i + "}";
-}
-function W(o, s = !1) {
-  const t = Object.keys(o);
-  let e = "";
-  return t.forEach(
-    (i) => e += s === "animation" ? q(
-      i,
-      o[i]
-    ) : R(
-      i,
-      o[i]
-    )
-  ), e;
-}
-class N {
-  constructor({ chatflow: s, theme: t }) {
-    if (b.chatflowID = s, !t)
-      return;
-    const { typography: e, colors: i, icon: n } = t;
-    e && Object.keys(e).forEach(
-      (a) => c.typography[a] = e[a]
-    ), i && Object.keys(i).forEach(
-      (a) => c.colors[a] = i[a]
-    ), n && (c.customIcon = n);
-  }
-  init() {
-    this.registerComponents(
-      f,
-      x,
-      E,
-      v,
-      w,
-      l,
-      S
-    );
-    const s = new f();
-    A({
-      element: s,
-      styles: [
-        L(c),
-        _(c),
-        $(c),
-        O()
-      ]
-    }), document.body.appendChild(s);
-  }
-  registerComponents(...s) {
-    s.forEach((t) => customElements.define(t.tag, t));
-  }
-}
-export {
-  N as default
-};
+z"
+  />
+</svg>
