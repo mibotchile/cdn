@@ -61,7 +61,6 @@ export class chatMessage extends WebComponent {
       this.querySelector(".onbotgo-message").appendChild(image);
     }
     if (message.type === "LoadingMessage") this.setLoadingAnimation();
-    console.log(message, this.innerHTML, this);
   }
 
   handlePlayPause() {

@@ -13,12 +13,13 @@ import paperclip from "./../../assets/icons/paperclip.svg?raw";
 import trashIcon from "./../../assets/icons/trashIcon.svg?raw";
 import iconPlus from "./../../assets/icons/plus.svg?raw";
 import sendIcon from "./../../assets/icons/send.svg?raw";
+import { appConfig } from "../../app-state/config";
 
 const tag = "onbotgo-chatcontainer";
 export class ChatContainer extends WebComponent {
   messagesHistory = [
     {
-      message: "¡Hola! ¿En qué puedo ayudarte hoy?",
+      message: appConfig.welcomeMessage,
       type: "apiMessage",
     },
   ];

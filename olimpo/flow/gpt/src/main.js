@@ -28,8 +28,10 @@ import { FabButton } from "./components/buttons/filled/filledButton";
 import { MicRecord } from "./components/chat/record/record";
 
 export default class Chatbot {
-  constructor({ chatflow, theme: customTheme }) {
+  constructor({ chatflow, theme: customTheme, welcomeMessage }) {
     appConfig.chatflowID = chatflow;
+    console.log(welcomeMessage);
+    if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
 
     if (!customTheme) return;
     const { typography, colors, icon } = customTheme;
