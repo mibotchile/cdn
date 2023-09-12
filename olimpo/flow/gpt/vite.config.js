@@ -9,5 +9,8 @@ export default defineConfig({
       formats: ["es"],
       fileName: "onbotgo_gptv0.2.min",
     },
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
   },
 });
