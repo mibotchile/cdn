@@ -2,6 +2,7 @@ import { WebComponent } from "../../webComponent";
 import { Box } from "../../box/box";
 import { theme } from "../../../app-state/theme";
 import template from "./template.html?raw";
+import sendIcon from "./../../../assets/icons/send.svg?raw";
 
 const tag = "onbotgo-chatinput";
 
@@ -14,12 +15,11 @@ export class ChatInput extends WebComponent {
     boxShadow: "0 2px 6px -1px rgba(0,0,0,.1)",
   };
   input;
-  sendIcon;
 
   constructor() {
     super();
 
-    this.innerHTML = this.renderHTML(template);
+    this.innerHTML = this.renderHTML(template, { sendIcon: sendIcon });
     this.input = this.querySelector("input");
     this.sendIcon = this.querySelector(Box.tag);
 

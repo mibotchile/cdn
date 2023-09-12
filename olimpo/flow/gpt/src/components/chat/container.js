@@ -4,12 +4,15 @@ import { sendMessage } from "../../api/sendMessage";
 import { ChatInput } from "./chatInput/chatInput";
 import { CustomScrollBar } from "../scrollbar/customScrollbar";
 
-import logo from "../../assets/logo.html?raw";
 import template from "./container.html?raw";
+import attachFileTemplate from "./attachFile/template.html?raw";
+
+import logo from "../../assets/logo.html?raw";
 import microphone from "./../../assets/icons/microphone.svg?raw";
 import paperclip from "./../../assets/icons/paperclip.svg?raw";
 import trashIcon from "./../../assets/icons/trashIcon.svg?raw";
 import iconPlus from "./../../assets/icons/plus.svg?raw";
+import sendIcon from "./../../assets/icons/send.svg?raw";
 
 const tag = "onbotgo-chatcontainer";
 export class ChatContainer extends WebComponent {
@@ -20,6 +23,7 @@ export class ChatContainer extends WebComponent {
     },
   ];
   attachedFiles = [];
+  attachedRecord;
 
   messagesContainer;
   scrollBar;
@@ -27,6 +31,7 @@ export class ChatContainer extends WebComponent {
   attachFileInput;
   btnOnbotgoAttachInput;
   btnattachNewFile;
+  isRecordSelected = false;
 
   defaultStyles = {
     bottom: "60px",
@@ -48,13 +53,35 @@ export class ChatContainer extends WebComponent {
   constructor() {
     super();
     this.setStyles(this.defaultStyles);
-    // this.classList.add("hidden");
+    this.classList.add("hidden");
     this.render();
+    this.addEventListener("onbotgo-delete-record", () => {
+      this.isRecordSelected = false;
+      this.attachedRecord = null;
+      this.getChild("#onbotgo-btnrecordSend").style.display = "none";
+      this.getChild("#onbotgo-btnrecord").style.display = "grid";
+      this.getChild("#onbotgo-chatinput").style.display = "grid";
+      this.getChild("#onbotgo-attachFileTemplateContainer").style.display =
+        "grid";
+      this.getChild("#onbotgo-micrecord").style.display = "none";
+      this.updateScrollbar();
+    });
+    this.addEventListener("onbotgo-stop-record", (record) => {
+      this.attachedRecord = record.detail;
+      this.getChild("#onbotgo-btnrecordSend").onclick = () => {
+        this.onSubmit();
+        this.getChild("#onbotgo-chatinput").style.display = "grid";
+        this.getChild("#onbotgo-btnrecord").style.display = "grid";
+        this.getChild("#onbotgo-btnrecordSend").style.display = "none";
+        this.renderAttachTemplate();
+        this.getChild("#onbotgo-btnrecordSend").onclick = () => {};
+      };
+    });
   }
 
   onSubmit(message) {
-    message = message.trim();
-    if (!message) return;
+    message = message?.trim() ?? "";
+    if (!message && !this.attachedFiles.length && !this.attachedRecord) return;
     const history = structuredClone(this.messagesHistory);
     history.splice(0, 1);
     const payload = {
@@ -62,14 +89,44 @@ export class ChatContainer extends WebComponent {
       question: message,
     };
 
-    this.addMessages([{ message: message, type: "userMessage" }]);
-    this.renderMessages([{ type: "loadingMessage" }]);
+    if (this.attachedFiles.length) {
+      this.addMessages(
+        this.attachedFiles.map((af) => ({
+          type: "userMessage",
+          file: af,
+          fileType: af.type.includes("image") ? "image" : af.type,
+        }))
+      );
+      this.attachedFiles = [];
+      this.renderAttachTemplate();
+      this.messagesContainer.querySelectorAll("img").forEach((img) => {
+        img.onload = () => this.updateScrollbar();
+      });
+    }
+
+    if (this.attachedRecord)
+      this.addMessages([
+        {
+          type: "userMessage",
+          file: this.attachedRecord,
+          fileType: "audio",
+        },
+      ]);
+    if (message) this.addMessages([{ message: message, type: "userMessage" }]);
+    this.renderMessages([{ type: "LoadingMessage" }]);
     this.updateScrollbar();
 
+    this.isRecordSelected = false;
+    this.attachedRecord = null;
+    this.chatInput.getChild("input").value = "";
+    this.getChild("#onbotgo-chatinput").style.display = "grid";
+    this.getChild("#onbotgo-attachFileTemplateContainer").style.display =
+      "grid";
+    this.getChild("#onbotgo-micrecord").style.display = "none";
+    this.updateScrollbar();
     sendMessage(payload)
       .then((apiMessage) => {
         if (!apiMessage.success) throw new Error(apiMessage.msg);
-
         if (apiMessage.data.process.length)
           apiMessage.data.process.forEach((process) => {
             this.addMessages([
@@ -90,6 +147,7 @@ export class ChatContainer extends WebComponent {
         this.messagesContainer
           .querySelectorAll(".loading-api-message")
           ?.forEach((node) => node.remove());
+
         this.updateScrollbar();
       });
   }
@@ -107,8 +165,8 @@ export class ChatContainer extends WebComponent {
   }
 
   attachFile(e) {
-    this.btnOnbotgoAttachInput = this.attachedFiles.push(e.target.files[0]);
-    this.render();
+    this.attachedFiles.push(e.target.files[0]);
+    this.renderAttachTemplate();
   }
 
   renderMessages(messages) {
@@ -127,12 +185,34 @@ export class ChatContainer extends WebComponent {
 
   updateScrollbar() {
     this.scrollBar.setScrollThumbHeight();
+
     this.messagesContainer.scrollTo(0, this.messagesContainer.scrollHeight);
     if (
       this.messagesContainer.scrollTop > 0 &&
       this.scrollBar.style.visibility === "hidden"
     )
       this.scrollBar.style.visibility = "visible";
+  }
+
+  renderAttachTemplate() {
+    this.getChild("#onbotgo-attachFileTemplateContainer").innerHTML =
+      this.renderHTML(attachFileTemplate, {
+        attachedFiles: this.attachedFiles,
+        paperclipIcon: paperclip,
+        iconPlus: iconPlus,
+        trashIcon: trashIcon,
+      });
+    this.attachFileInput = this.querySelector("#onbotgoAttachFileInput");
+    this.btnOnbotgoAttachInput =
+      this.querySelector("#btnOnbotgoAttachInput") ??
+      this.querySelector("#btnOnbotgoAttachInputMenu");
+    this.btnattachNewFile = this.querySelector("#onbotgo-btnattachNewFile");
+
+    this.btnOnbotgoAttachInput.onclick = () => {
+      if (!this.attachedFiles.length) return this.attachFileInput.click();
+    };
+    this.btnattachNewFile.onclick = () => this.attachFileInput.click();
+    this.attachFileInput.onchange = (e) => this.attachFile(e);
   }
   render() {
     this.innerHTML = this.renderHTML(template, {
@@ -142,29 +222,52 @@ export class ChatContainer extends WebComponent {
       attachedFiles: this.attachedFiles,
       trashIcon,
       iconPlus,
+      sendIcon: sendIcon,
+      isRecordSelected: this.isRecordSelected,
     });
-    this.attachFileInput = this.querySelector("#onbotgoAttachFileInput");
+    this.renderAttachTemplate();
+
+    const micRecord = this.querySelector("onbotgo-micrecord");
+    const dropdown = this.querySelector("onbotgo-dropdown");
     this.messagesContainer = this.querySelector("#onbotgo-messageContainer");
-    this.btnOnbotgoAttachInput = this.querySelector("#btnOnbotgoAttachInput");
-    this.btnattachNewFile = this.querySelector("#onbotgo-btnattachNewFile");
+
     this.chatInput = this.querySelector(ChatInput.tag);
     this.scrollBar = this.querySelector(CustomScrollBar.tag);
 
-    this.chatInput.onSubmit(this.onSubmit.bind(this));
-    this.btnattachNewFile.onclick = () => this.attachFileInput.click();
-    this.renderMessages(this.messagesHistory);
-
-    this.btnOnbotgoAttachInput.onclick = () => {
-      if (!this.attachedFiles.length) return this.attachFileInput.click();
+    this.getChild("#onbotgo-btnrecordSend").style.display = "none";
+    this.querySelector("#onbotgo-btnrecord").onclick = () => {
+      this.isRecordSelected = true;
+      this.getChild("#onbotgo-btnrecord").style.display = "none";
+      this.getChild("#onbotgo-btnrecordSend").style.display = "grid";
+      this.getChild("#onbotgo-chatinput").style.display = "none";
+      this.getChild("#onbotgo-attachFileTemplateContainer").style.display =
+        "none";
+      this.getChild("#onbotgo-micrecord").style.display = "flex";
+      this.renderAttachTemplate();
+      this.updateScrollbar();
     };
 
-    this.attachFileInput.onchange = (e) => this.attachFile(e);
+    this.chatInput.onSubmit(this.onSubmit.bind(this));
+    this.renderMessages(this.messagesHistory);
+
+    if (this.isRecordSelected) {
+      dropdown.style.display = "none";
+      this.chatInput.style.display = "none";
+      micRecord.style.display = "flex";
+    } else {
+      dropdown.style.display = "grid";
+      this.btnattachNewFile.style.display = "grid";
+      this.chatInput.style.display = "grid";
+      micRecord.style.display = "none";
+    }
 
     this.querySelectorAll(".onbotgo-attachedFile").forEach((elem, i) => {
       elem.querySelector("i").onclick = (e) => {
         this.attachedFiles.splice(i, 1);
-        this.render();
-        this.querySelector(".onbotgo-dropdown-content").style.display = "block";
+        this.renderAttachTemplate();
+        if (this.attachedFiles.length)
+          this.querySelector(".onbotgo-dropdown-content").style.display =
+            "flex";
         e.stopPropagation();
       };
     });

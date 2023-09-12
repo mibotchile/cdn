@@ -1,2 +1,39 @@
-<onbotgo-iconbutton color="primary" size="23px" style="margin-top: 7px">
+<onbotgo-iconbutton color="danger" size="36px" id="onbootgo-delete-record">
+  <i style="cursor: pointer">{{it.trashIcon | safe}}</i>
 </onbotgo-iconbutton>
+
+<!--PLAY-->
+<onbotgo-box id="onbotgo-mic-record" style="width: 100%"></onbotgo-box>
+<onbotgo-iconbutton
+  id="onbotgo-btn-stop"
+  color="primary"
+  size="36px"
+  style="margin-top: 5px"
+>
+  <i style="cursor: pointer">{{it.stopIcon | safe}}</i>
+</onbotgo-iconbutton>
+<!-- END PLAY-->
+
+<!-- STOP -->
+<onbotgo-box
+  id="onbotgo-empty-waveform"
+  style="width: 100%; padding: 0 8px; padding-top: 1px"
+>
+  <onbotgo-box
+    style="
+      height: 1px;
+      width: 100%;
+      background-color: lightgray;
+      display: block;
+    "
+  ></onbotgo-box>
+</onbotgo-box>
+<onbotgo-iconbutton
+  id="onbotgo-btn-play"
+  color="primary"
+  size="36px"
+  style="margin-top: 7px"
+>
+  <i style="cursor: pointer">{{it.playIcon | safe}}</i>
+</onbotgo-iconbutton>
+<!-- END STOP-->

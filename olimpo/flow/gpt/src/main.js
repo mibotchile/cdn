@@ -25,6 +25,7 @@ import { CustomScrollBar } from "./components/scrollbar/customScrollbar";
 import { IconButton } from "./components/buttons/icon/icon";
 import { Dropdown } from "./components/dropdownMenu/dropdown";
 import { FabButton } from "./components/buttons/filled/filledButton";
+import { MicRecord } from "./components/chat/record/record";
 
 export default class Chatbot {
   constructor({ chatflow, theme: customTheme }) {
@@ -57,7 +58,8 @@ export default class Chatbot {
       CustomScrollBar,
       IconButton,
       Dropdown,
-      FabButton
+      FabButton,
+      MicRecord
     );
 
     const widgetContainer = new WidgetContainer();

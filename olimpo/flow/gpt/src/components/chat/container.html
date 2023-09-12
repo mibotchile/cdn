@@ -22,84 +22,31 @@
   </onbotgo-box>
 </onbotgo-box>
 <onbotgo-box
-  style="display: grid; grid-template-columns: 10% 75% 15%; gap: 10px"
+  style="display: flex; gap: 10px; align-items: center; height: 48px"
 >
-  <onbotgo-dropdown>
-    <input id="onbotgoAttachFileInput" type="file" style="display: none" />
-    {{@if (it.attachedFiles.length > 0)}}
-    <onbotgo-iconbutton
-      color="primary"
-      size="23px"
-      style="margin-top: 7px; position: relative"
-      id="btnOnbotgoAttachInput"
-    >
-      {{it.paperclipIcon | safe}}
-      <onbotgo-box
-        style="
-          position: absolute;
-          top: -3px;
-          right: -3px;
-          border-radius: 100px;
-          z-index: 1;
-          background-color: rgb(255, 43, 43);
-          color: white;
-          font-size: 12px;
-          width: 16px;
-          height: 16px;
-          display: grid;
-          place-items: center;
-          opacity: 1;
-        "
-        >{{it.attachedFiles.length}}
-      </onbotgo-box>
-    </onbotgo-iconbutton>
-    {{#else}}
-    <onbotgo-iconbutton
-      id="btnOnbotgoAttachInput"
-      color="primary"
-      size="23px"
-      style="margin-top: 7px"
-    >
-      {{it.paperclipIcon | safe}}
-    </onbotgo-iconbutton>
-    {{ /if}}
-    <onbotgo-box
-      style="display: flex !important; flex-direction: column; gap: 6px"
-      class="onbotgo-dropdown-content"
-    >
-      {{@each(it.attachedFiles) => file}}
-      <onbotgo-box
-        class="onbotgo-attachedFile"
-        style="
-          display: flex !important;
-          justify-content: space-between;
-          gap: 14px;
-        "
-      >
-        <span style="min-width: fit-content">{{file.name }}</span>
-        <i style="cursor: pointer">{{it.trashIcon | safe}}</i>
-      </onbotgo-box>
-      {{/each}}
-      <onbotgo-box
-        style="
-          margin-top: 4px;
-          display: flex !important;
-          justify-content: center;
-        "
-      >
-        <onbotgo-fabbutton
-          id="onbotgo-btnattachNewFile"
-          style="margin: 0 auto"
-          color="primary"
-          size="20px"
-        >
-          {{it.iconPlus | safe}}
-        </onbotgo-fabbutton>
-      </onbotgo-box>
-    </onbotgo-box>
-  </onbotgo-dropdown>
-  <onbotgo-chatinput></onbotgo-chatinput>
-  <onbotgo-iconbutton color="primary" size="23px" style="margin-top: 7px">
+  <onbotgo-box id="onbotgo-attachFileTemplateContainer"> </onbotgo-box>
+  <onbotgo-chatinput
+    id="onbotgo-chatinput"
+    style="width: 100%"
+  ></onbotgo-chatinput>
+  <onbotgo-micrecord
+    id="onbotgo-micrecord"
+    style="width: 100%; display: flex; align-items: center; gap: 10px"
+  ></onbotgo-micrecord>
+  <onbotgo-iconbutton
+    id="onbotgo-btnrecordSend"
+    color="primary"
+    size="36px"
+    style="margin-top: 7px"
+  >
+    {{it.sendIcon | safe}}
+  </onbotgo-iconbutton>
+  <onbotgo-iconbutton
+    id="onbotgo-btnrecord"
+    color="primary"
+    size="36px"
+    style="margin-top: 7px"
+  >
     {{it.micIcon | safe}}
   </onbotgo-iconbutton>
 </onbotgo-box>

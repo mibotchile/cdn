@@ -10,4 +10,7 @@ export class WebComponent extends HTMLElement {
   renderHTML(html, config = {}) {
     return render(html, { ...config });
   }
+  getChild(selector) {
+    return this.querySelector(selector);
+  }
 }

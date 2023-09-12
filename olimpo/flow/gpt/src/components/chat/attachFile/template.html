@@ -1,0 +1,69 @@
+<onbotgo-dropdown>
+  <input id="onbotgoAttachFileInput" type="file" style="display: none" />
+  {{@if (it.attachedFiles.length > 0)}}
+  <onbotgo-iconbutton
+    color="primary"
+    size="36px"
+    style="margin-top: 7px"
+    id="btnOnbotgoAttachInputMenu"
+  >
+    {{it.paperclipIcon | safe}}
+    <onbotgo-box
+      style="
+        position: absolute;
+        top: -3px;
+        right: -3px;
+        border-radius: 100px;
+        z-index: 1;
+        background-color: rgb(255, 43, 43);
+        color: white;
+        font-size: 12px;
+        width: 16px;
+        height: 16px;
+        display: grid;
+        place-items: center;
+        opacity: 1;
+      "
+      >{{it.attachedFiles.length}}
+    </onbotgo-box>
+  </onbotgo-iconbutton>
+  {{#else}}
+  <onbotgo-iconbutton
+    id="btnOnbotgoAttachInput"
+    color="primary"
+    size="36px"
+    style="margin-top: 7px"
+  >
+    {{it.paperclipIcon | safe}}
+  </onbotgo-iconbutton>
+  {{ /if}}
+  <onbotgo-box class="onbotgo-dropdown-content">
+    {{@each(it.attachedFiles) => file}}
+    <onbotgo-box
+      class="onbotgo-attachedFile"
+      style="
+        display: flex !important;
+        justify-content: space-between;
+        gap: 14px;
+      "
+    >
+      <span class="onbotgo-attachedFile-name">{{ file.name }}</span>
+      <i style="width: 19px; color: red; cursor: pointer"
+        >{{it.trashIcon | safe}}</i
+      >
+    </onbotgo-box>
+    {{/each}}
+    <onbotgo-box
+      style="margin-top: 4px; display: flex !important; justify-content: center"
+    >
+      <onbotgo-fabbutton
+        id="onbotgo-btnattachNewFile"
+        style="margin: 0 auto"
+        color="primary"
+        size="20px"
+      >
+        {{it.iconPlus | safe}}
+      </onbotgo-fabbutton>
+    </onbotgo-box>
+  </onbotgo-box>
+</onbotgo-dropdown>
