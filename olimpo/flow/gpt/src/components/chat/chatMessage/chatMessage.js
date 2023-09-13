@@ -59,6 +59,8 @@ export class chatMessage extends WebComponent {
       image.style.maxWidth = "80%";
 
       this.querySelector(".onbotgo-message").appendChild(image);
+    } else if (!message.fileType && message.type !== "LoadingMessage") {
+      this.querySelector(".onbotgo-message").innerHTML += message.message;
     }
     if (message.type === "LoadingMessage") this.setLoadingAnimation();
   }
