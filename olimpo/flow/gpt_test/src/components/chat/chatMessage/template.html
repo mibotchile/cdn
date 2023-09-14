@@ -1,0 +1,75 @@
+{{ @if (it.type === "userMessage") }} {{@if(it.file)}} {{@if(it.fileType
+==='audio')}}
+<onbotgo-box
+  class="from-user onbotgo-message"
+  style="display: flex; flex-direction: row; gap: 12px"
+>
+  <onbotgo-box
+    style="
+      width: 32px;
+      color: white;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 100px;
+      padding: 8px;
+      height: 32px;
+      box-sizing: border-box;
+    "
+    id="onbotgo-playAudioMessage"
+    >{{it.iconPlayPause | safe}}</onbotgo-box
+  >
+  <div id="waveform" style="min-width: 100px"></div
+></onbotgo-box>
+{{#elif (it.fileType.includes('image'))}}
+<onbotgo-box
+  class="from-user onbotgo-message"
+  style="display: flex; justify-content: center"
+>
+</onbotgo-box>
+{{#else}}
+<onbotgo-box class="from-user onbotgo-message">{{it.file.name}} </onbotgo-box>
+{{/if}} {{#else }}
+<onbotgo-box class="from-user onbotgo-message"></onbotgo-box>
+{{/if}}{{/if}} {{@if(it.type === "LoadingMessage") }}
+<onbotgo-box class="loading-api-message onbotgo-message">
+  <onbotgo-box class="dot"></onbotgo-box>
+  <onbotgo-box class="dot"></onbotgo-box>
+  <onbotgo-box class="dot"></onbotgo-box>
+  <onbotgo-box class="bg-semi-transp"></onbotgo-box>
+</onbotgo-box>
+{{/if}} {{@if((it.type === "apiMessage") ) }} {{@if(it.file)}} {{@if(it.fileType
+=== 'audio')}}
+<onbotgo-box
+  class="from-chatbot onbotgo-message"
+  style="display: flex; flex-direction: row; gap: 12px"
+>
+  <onbotgo-box
+    style="
+      width: 32px;
+      color: white;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 100px;
+      padding: 8px;
+      height: 32px;
+      box-sizing: border-box;
+    "
+    id="onbotgo-playAudioMessage"
+    >{{it.iconPlayPause | safe}}</onbotgo-box
+  >
+  <div id="waveform" style="min-width: 100px"></div
+></onbotgo-box>
+{{#elif(it.fileType.includes('image'))}}
+
+<onbotgo-box
+  class="from-chatbot onbotgo-message"
+  style="display: flex; justify-content: center"
+>
+</onbotgo-box>
+{{#else}}
+<onbotgo-box class="from-chatbot onbotgo-message"
+  >{{it.file.name}}
+</onbotgo-box>
+{{/if}} {{#else}}
+<onbotgo-box class="from-chatbot onbotgo-message">
+  <onbotgo-box class="bg-semi-transp"></onbotgo-box>
+</onbotgo-box>
+{{ /if}} {{/if}}
