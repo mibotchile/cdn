@@ -7,7 +7,7 @@ export default defineConfig({
       entry: resolve(__dirname, "src/main.js"),
       name: "onbotgo_gpt",
       formats: ["es"],
-      fileName: "onbotgo_gptv0.2.min",
+      fileName: "onbotgo_gpt.min",
     },
     commonjsOptions: {
       transformMixedEsModules: true,
