@@ -12,6 +12,7 @@ export class ChatInput extends WebComponent {
     display: "grid",
     gridTemplateColumns: "10fr 1fr",
     alignItems: "center",
+    borderRadius: "8px",
     boxShadow: "0 2px 6px -1px rgba(0,0,0,.1)",
   };
   input;

@@ -15,6 +15,8 @@ import iconPlus from "./../../assets/icons/plus.svg?raw";
 import sendIcon from "./../../assets/icons/send.svg?raw";
 import { appConfig } from "../../app-state/config";
 import { SessionStorage } from "../../app-state/SessionStorage";
+import tarjetaOhLogo from "./../../assets/images/tarjeta_oh.png";
+import { theme } from "../../app-state/theme";
 
 const tag = "onbotgo-chatcontainer";
 export class ChatContainer extends WebComponent {
@@ -28,6 +30,7 @@ export class ChatContainer extends WebComponent {
   attachedFiles = [];
   attachedRecord;
 
+  header;
   messagesContainer;
   scrollBar;
   chatInput;
@@ -50,7 +53,8 @@ export class ChatContainer extends WebComponent {
     height: "70vh",
     backgroundColor: "white",
     borderRadius: "8px",
-    padding: "10px 20px",
+    paddingBottom: "10px",
+    overflow: "hidden",
   };
 
   constructor() {
@@ -255,6 +259,15 @@ export class ChatContainer extends WebComponent {
 
     this.chatInput = this.querySelector(ChatInput.tag);
     this.scrollBar = this.querySelector(CustomScrollBar.tag);
+    this.header = this.querySelector("#onbotgo-chatheader");
+    this.header.style.display = "flex";
+    this.header.style.width = "100%";
+    this.header.style.justifyContent = "center";
+    this.header.style.backgroundColor = theme.colors.primary;
+    const logoHeader = this.header.getChild("img");
+    logoHeader.src = tarjetaOhLogo;
+    logoHeader.style.objectFit = "cover";
+    logoHeader.style.width = "auto";
 
     this.getChild("#onbotgo-btnrecordSend").style.display = "none";
     this.querySelector("#onbotgo-btnrecord").onclick = () => {
