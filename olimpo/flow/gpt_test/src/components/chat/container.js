@@ -15,7 +15,7 @@ import iconPlus from "./../../assets/icons/plus.svg?raw";
 import sendIcon from "./../../assets/icons/send.svg?raw";
 import { appConfig } from "../../app-state/config";
 import { SessionStorage } from "../../app-state/SessionStorage";
-import tarjetaOhLogo from "./../../assets/images/financiera_oh.jpeg";
+import tarjetaOhLogo from "./../../assets/images/financiera_oh.png";
 import { theme } from "../../app-state/theme";
 
 const tag = "onbotgo-chatcontainer";
