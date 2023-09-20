@@ -15,7 +15,7 @@ import iconPlus from "./../../assets/icons/plus.svg?raw";
 import sendIcon from "./../../assets/icons/send.svg?raw";
 import { appConfig } from "../../app-state/config";
 import { SessionStorage } from "../../app-state/SessionStorage";
-import tarjetaOhLogo from "./../../assets/images/tarjeta_oh.png";
+import tarjetaOhLogo from "./../../assets/images/financiera_oh.jpeg";
 import { theme } from "../../app-state/theme";
 
 const tag = "onbotgo-chatcontainer";
@@ -267,7 +267,6 @@ export class ChatContainer extends WebComponent {
     const logoHeader = this.header.getChild("img");
     logoHeader.src = tarjetaOhLogo;
     logoHeader.style.objectFit = "cover";
-    logoHeader.style.width = "auto";
 
     this.getChild("#onbotgo-btnrecordSend").style.display = "none";
     this.querySelector("#onbotgo-btnrecord").onclick = () => {
