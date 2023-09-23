@@ -233,7 +233,7 @@ export class ChatContainer extends WebComponent {
         this.attachedFiles.find(({ name }) => name === payload[0].name).url =
           response.data[0].url;
       })
-      .catch((err) => alert("Error al subir archivo") || console.log(err));
+      .catch((err) => console.log(err));
 
     this.attachedFiles.push(e.target.files[0]);
     this.renderAttachTemplate();
