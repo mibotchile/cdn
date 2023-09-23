@@ -30,7 +30,6 @@ import { MicRecord } from "./components/chat/record/record";
 export default class Chatbot {
   constructor({ chatflow, theme: customTheme, welcomeMessage }) {
     appConfig.chatflowID = chatflow;
-    console.log(welcomeMessage);
     if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
 
     if (!customTheme) return;

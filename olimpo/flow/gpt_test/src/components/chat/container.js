@@ -17,6 +17,8 @@ import { appConfig } from "../../app-state/config";
 import { SessionStorage } from "../../app-state/SessionStorage";
 import tarjetaOhLogo from "./../../assets/images/financiera_oh.png";
 import { theme } from "../../app-state/theme";
+import { uploadFile } from "../../api/uploadFile";
+import { sendComprobante } from "../../api/sendCoomprobante";
 
 const tag = "onbotgo-chatcontainer";
 export class ChatContainer extends WebComponent {
@@ -54,7 +56,6 @@ export class ChatContainer extends WebComponent {
     backgroundColor: "white",
     borderRadius: "8px",
     paddingBottom: "10px",
-    overflow: "hidden",
   };
 
   constructor() {
@@ -91,13 +92,13 @@ export class ChatContainer extends WebComponent {
     if (!message && !this.attachedFiles.length && !this.attachedRecord) return;
     const history = structuredClone(this.messagesHistory);
     history.splice(0, 1);
-    console.log(
-      SessionStorage.messageHistoryId,
-      SessionStorage.messageHistoryId.get()
-    );
     const payload = {
-      message: message,
-      unique_id: SessionStorage.messageHistoryId.get() ?? "",
+      message:
+        this.attachedFiles.length && !message && !this.attachedRecord
+          ? "Adjunto comprobante de pago"
+          : message,
+      url: (this.attachedFiles || []).map(({ url }) => url),
+      unique_id: appConfig.messageHistoryId,
     };
 
     if (this.attachedFiles.length) {
@@ -124,12 +125,7 @@ export class ChatContainer extends WebComponent {
         },
       ]);
     if (message) this.addMessages([{ message: message, type: "userMessage" }]);
-    SessionStorage.messagesHistory.add([
-      {
-        message: message,
-        type: "userMessage",
-      },
-    ]);
+
     this.renderMessages([{ type: "LoadingMessage" }]);
     this.updateScrollbar();
 
@@ -141,41 +137,70 @@ export class ChatContainer extends WebComponent {
       "grid";
     this.getChild("#onbotgo-micrecord").style.display = "none";
     this.updateScrollbar();
-    sendMessage(payload)
-      .then((apiMessage) => {
-        // if (!apiMessage.success) throw new Error(apiMessage.msg);
-        console.log(apiMessage);
-        if (apiMessage?.unique_id)
-          SessionStorage.messageHistoryId.set(apiMessage.unique_id);
-        if (apiMessage?.data?.process?.length)
-          apiMessage.data.process.forEach((process) => {
+    if (payload.url.length)
+      payload.url.forEach((url) => {
+        sendMessage({
+          ...payload,
+          message: `envio comprobante de pago, esta es la url "${url}"`,
+          url: undefined,
+        })
+          .then((apiMessage) => {
+            // if (!apiMessage.success) throw new Error(apiMessage.msg);
+            if (apiMessage?.unique_id)
+              appConfig.messageHistoryId = apiMessage.unique_id;
+            if (apiMessage?.data?.process?.length)
+              apiMessage.data.process.forEach((process) => {
+                this.addMessages([
+                  {
+                    type: process.role,
+                    name: process.name,
+                    content: process.content,
+                  },
+                ]);
+              });
+
             this.addMessages([
-              {
-                type: process.role,
-                name: process.name,
-                content: process.content,
-              },
+              { message: apiMessage.response, type: "apiMessage" },
             ]);
+          })
+          .catch((err) => console.log(err))
+          .finally(() => {
+            this.messagesContainer
+              .querySelectorAll(".loading-api-message")
+              ?.forEach((node) => node.remove());
+
+            this.updateScrollbar();
           });
-
-        this.addMessages([
-          { message: apiMessage.response, type: "apiMessage" },
-        ]);
-        SessionStorage.messagesHistory.add([
-          {
-            message: apiMessage.response,
-            type: "apiMessage",
-          },
-        ]);
-      })
-      .catch((err) => console.log(err))
-      .finally(() => {
-        this.messagesContainer
-          .querySelectorAll(".loading-api-message")
-          ?.forEach((node) => node.remove());
-
-        this.updateScrollbar();
       });
+    else
+      sendMessage(payload)
+        .then((apiMessage) => {
+          // if (!apiMessage.success) throw new Error(apiMessage.msg);
+          if (apiMessage?.unique_id)
+            appConfig.messageHistoryId = apiMessage.unique_id;
+          if (apiMessage?.data?.process?.length)
+            apiMessage.data.process.forEach((process) => {
+              this.addMessages([
+                {
+                  type: process.role,
+                  name: process.name,
+                  content: process.content,
+                },
+              ]);
+            });
+
+          this.addMessages([
+            { message: apiMessage.response, type: "apiMessage" },
+          ]);
+        })
+        .catch((err) => console.log(err))
+        .finally(() => {
+          this.messagesContainer
+            .querySelectorAll(".loading-api-message")
+            ?.forEach((node) => node.remove());
+
+          this.updateScrollbar();
+        });
   }
 
   toggle() {
@@ -190,7 +215,26 @@ export class ChatContainer extends WebComponent {
     }
   }
 
-  attachFile(e) {
+  async attachFile(e) {
+    const payload = [
+      {
+        name: e.target.files[0].name,
+        size: e.target.files[0].size,
+        type: e.target.files[0].type,
+        buffer: Array.from(
+          new Uint8Array(await e.target.files[0].arrayBuffer())
+        ),
+      },
+    ];
+
+    uploadFile(payload)
+      .then((response) => {
+        console.log(payload, this.attachedFiles);
+        this.attachedFiles.find(({ name }) => name === payload[0].name).url =
+          response.data[0].url;
+      })
+      .catch((err) => alert("Error al subir archivo") || console.log(err));
+
     this.attachedFiles.push(e.target.files[0]);
     this.renderAttachTemplate();
   }
