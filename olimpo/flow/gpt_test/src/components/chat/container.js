@@ -18,7 +18,6 @@ import { SessionStorage } from "../../app-state/SessionStorage";
 import tarjetaOhLogo from "./../../assets/images/financiera_oh.png";
 import { theme } from "../../app-state/theme";
 import { uploadFile } from "../../api/uploadFile";
-import { sendComprobante } from "../../api/sendCoomprobante";
 
 const tag = "onbotgo-chatcontainer";
 export class ChatContainer extends WebComponent {
@@ -226,55 +225,55 @@ export class ChatContainer extends WebComponent {
         ),
       },
     ];
+    const containerBtn = this.querySelector(
+      "onbotgo-dropdown onbotgo-iconbutton"
+    );
     try {
-      this.chatInput.onSubmit = () => null;
-      // this.chatInput.querySelector(
-      //   ".send-icon-box"
-      // ).innerHTML = `<style>.lds-ring {
-      //   display: inline-block;
-      //   position: relative;
-      //   width: 19px;
-      //   height: 19x;
-      // }
-      // .lds-ring div {
-      //   box-sizing: border-box;
-      //   display: block;
-      //   position: absolute;
-      //   width: 19px;
-      //   height: 19px;
-      //   border: 8px solid ${theme.colors.primary};
-      //   border-radius: 50%;
-      //   animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-      //   border-color: ${theme.colors.primary} transparent transparent transparent;
-      // }
-      // .lds-ring div:nth-child(1) {
-      //   animation-delay: -0.45s;
-      // }
-      // .lds-ring div:nth-child(2) {
-      //   animation-delay: -0.3s;
-      // }
-      // .lds-ring div:nth-child(3) {
-      //   animation-delay: -0.15s;
-      // }
-      // @keyframes lds-ring {
-      //   0% {
-      //     transform: rotate(0deg);
-      //   }
-      //   100% {
-      //     transform: rotate(360deg);
-      //   }
-      // }</style><div class="lds-ring"><div></div><div></div><div></div><div></div></div>`;
+      containerBtn.querySelector("svg").style.display = "none";
+      containerBtn.innerHTML += `<style>.onbotgo-lds-ring {
+        display: grid;
+        position: relative;
+        place-items: center;
+        width: 19px;
+        height: 19x;
+      }
+      .onbotgo-lds-ring div {
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        width: 19px;
+        height: 19px;
+        border: 2px solid ${theme.colors.primary};
+        border-radius: 50%;
+        animation: onbotgo-lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        border-color: ${theme.colors.primary} transparent transparent transparent;
+      }
+      .onbotgo-lds-ring div:nth-child(1) {
+        animation-delay: -0.45s;
+      }
+      .onbotgo-lds-ring div:nth-child(2) {
+        animation-delay: -0.3s;
+      }
+      .onbotgo-lds-ring div:nth-child(3) {
+        animation-delay: -0.15s;
+      }
+      @keyframes onbotgo-lds-ring {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }</style><div class="onbotgo-lds-ring"><div></div><div></div><div></div><div></div></div>`;
       const res = await uploadFile(payload);
+      this.attachedFiles.push(e.target.files[0]);
       this.attachedFiles.find(({ name }) => name === payload[0].name).url =
         res.data[0].url;
-      // this.chatInput.querySelector(
-      //   ".send-icon-box"
-      // ).innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="19px" class="send-icon flex" fill="currentColor">
-      //   <path d="M476.59 227.05l-.16-.07L49.35 49.84A23.56 23.56 0 0027.14 52 24.65 24.65 0 0016 72.59v113.29a24 24 0 0019.52 23.57l232.93 43.07a4 4 0 010 7.86L35.53 303.45A24 24 0 0016 327v113.31A23.57 23.57 0 0026.59 460a23.94 23.94 0 0013.22 4 24.55 24.55 0 009.52-1.93L476.4 285.94l.19-.09a32 32 0 000-58.8z"></path>
-      // </svg>`;
-    } catch (err) {}
-
-    this.attachedFiles.push(e.target.files[0]);
+    } catch (err) {
+      console.log(err);
+    }
+    containerBtn.querySelector("style").remove();
+    containerBtn.querySelector(".onbotgo-lds-ring").remove();
     this.renderAttachTemplate();
   }
 
@@ -322,6 +321,17 @@ export class ChatContainer extends WebComponent {
     };
     this.btnattachNewFile.onclick = () => this.attachFileInput.click();
     this.attachFileInput.onchange = (e) => this.attachFile(e);
+
+    this.querySelectorAll(".onbotgo-attachedFile").forEach((elem, i) => {
+      elem.querySelector("i").onclick = (e) => {
+        this.attachedFiles.splice(i, 1);
+        this.renderAttachTemplate();
+        if (this.attachedFiles.length)
+          this.querySelector(".onbotgo-dropdown-content").style.display =
+            "flex";
+        e.stopPropagation();
+      };
+    });
   }
   render() {
     this.innerHTML = this.renderHTML(template, {
@@ -377,17 +387,6 @@ export class ChatContainer extends WebComponent {
       this.chatInput.style.display = "grid";
       micRecord.style.display = "none";
     }
-
-    this.querySelectorAll(".onbotgo-attachedFile").forEach((elem, i) => {
-      elem.querySelector("i").onclick = (e) => {
-        this.attachedFiles.splice(i, 1);
-        this.renderAttachTemplate();
-        if (this.attachedFiles.length)
-          this.querySelector(".onbotgo-dropdown-content").style.display =
-            "flex";
-        e.stopPropagation();
-      };
-    });
   }
 }
 
