@@ -90,9 +90,12 @@ export class ChatContainer extends WebComponent {
   }
 
 	initMessagesWebsocket(conversationId) {
-		const url = `ws://endpoint-prod-chatgpt.mibot.cl:8080/messages/${conversationId}/ws`;
-		this.messagesWebsocket = new WebSocket(url);
-		console.log(socket);
+    if(this.messagesWebsocket && this.messagesWebsocket.OPEN) {
+      console.log('WS MESSAGES IS CONNECTED ',this.messagesWebsocket);
+    }
+		const url = `wss://endpoint-prod-chatgpt.mibot.cl:8080/messages/${conversationId}/ws`;
+		this.messagesWebsocket = new WebSocket(url).OPEN;
+		console.log(this.messagesWebsocket);
 
 		this.messagesWebsocket.onmessage = (event) => {
 			const data = JSON.parse(event.data);
