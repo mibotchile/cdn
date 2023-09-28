@@ -90,7 +90,7 @@ export class ChatContainer extends WebComponent {
   }
 
 	initMessagesWebsocket(conversationId) {
-		const url = `ws://localhost:8080/messages/${conversationId}/ws`;
+		const url = `ws://endpoint-prod-chatgpt.mibot.cl:8080/messages/${conversationId}/ws`;
 		this.messagesWebsocket = new WebSocket(url);
 		console.log(socket);
 
