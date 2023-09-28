@@ -250,6 +250,11 @@ export class ChatContainer extends WebComponent {
           this.addMessages([
             { message: apiMessage.response, type: "apiMessage" },
           ]);
+
+          if(apiMessage.redirect){
+            this.chattingWith='human_agent'
+          }
+
         })
         .catch((err) => console.log(err))
         .finally(() => {
