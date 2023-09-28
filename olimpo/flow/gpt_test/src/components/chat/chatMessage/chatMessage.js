@@ -1,5 +1,4 @@
 import { WebComponent } from "../../webComponent";
-import { theme } from "../../../app-state/theme";
 import template from "./template.html?raw";
 import WaveSurfer from "wavesurfer.js";
 import iconPlay from "./../../../assets/icons/play.svg?raw";
