@@ -4,6 +4,9 @@
   class="from-user onbotgo-message"
   style="display: flex; flex-direction: row; gap: 12px"
 >
+  <onbotgo-box style="width: 40px; height: 40px"
+    ><img src="../../../assets/icons/user.svg"
+  /></onbotgo-box>
   <onbotgo-box
     style="
       width: 32px;
@@ -26,7 +29,7 @@
 >
 </onbotgo-box>
 {{#else}}
-<onbotgo-box class="from-user onbotgo-message">{{it.file.name}} </onbotgo-box>
+<onbotgo-box class="from-user onbotgo-message">{{it.file.name}}</onbotgo-box>
 {{/if}} {{#else }}
 <onbotgo-box class="from-user onbotgo-message"></onbotgo-box>
 {{/if}}{{/if}} {{@if(it.type === "LoadingMessage") }}
@@ -69,6 +72,7 @@
   >{{it.file.name}}
 </onbotgo-box>
 {{/if}} {{#else}}
+
 <onbotgo-box class="from-chatbot onbotgo-message">
   <onbotgo-box class="bg-semi-transp"></onbotgo-box>
 </onbotgo-box>

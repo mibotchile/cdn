@@ -1,6 +1,6 @@
 import { WebComponent } from "../webComponent";
 import { chatMessage } from "./chatMessage/chatMessage";
-import { getPrediction,sendMessage } from "../../api/sendMessage";
+import { getPrediction, sendMessage } from "../../api/sendMessage";
 import { ChatInput } from "./chatInput/chatInput";
 import { CustomScrollBar } from "../scrollbar/customScrollbar";
 
@@ -40,8 +40,8 @@ export class ChatContainer extends WebComponent {
   btnattachNewFile;
   isRecordSelected = false;
   messagesWebsocket;
-  chattingWith='virtual_assistant' // virtual_assistnat|human_agent
-  channelId=''
+  chattingWith = "virtual_assistant"; // virtual_assistnat|human_agent
+  channelId = "";
 
   defaultStyles = {
     bottom: "60px",
@@ -89,48 +89,49 @@ export class ChatContainer extends WebComponent {
     });
   }
 
-	initMessagesWebsocket(conversationId) {
-    if(this.messagesWebsocket && this.messagesWebsocket.OPEN) {
-      console.log('WS MESSAGES IS CONNECTED ',this.messagesWebsocket);
+  initMessagesWebsocket(conversationId) {
+    if (this.messagesWebsocket && this.messagesWebsocket.OPEN) {
+      console.log("WS MESSAGES IS CONNECTED ", this.messagesWebsocket);
     }
-		const url = `wss://endpoint-prod-chatgpt.mibot.cl:8080/messages/${conversationId}/ws`;
-		this.messagesWebsocket = new WebSocket(url);
-		console.log(this.messagesWebsocket);
+    const url = `wss://endpoint-prod-chatgpt.mibot.cl:8080/messages/${conversationId}/ws`;
+    this.messagesWebsocket = new WebSocket(url);
 
-		this.messagesWebsocket.onmessage = (event) => {
-			const data = JSON.parse(event.data);
-			console.log("ON MESSAGE ", data);
-			if (data.event === "incoming_message") {
-				const message = data.data;
+    this.messagesWebsocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log("ON MESSAGE ", data);
+      if (data.event === "incoming_message") {
+        const message = data.data;
 
-				this.addMessages([{ message: message.content, type: "apiMessage" }]);
+        this.addMessages(
+          [{ message: message.content, type: "apiMessage" }],
+          { updateScrollbar: true },
+          true
+        );
+      }
+    };
 
-				this.updateScrollbar();
-			}
-		};
+    this.messagesWebsocket.onopen = (event) => {
+      console.log("SOCKET CONNECTED ", event);
 
-		this.messagesWebsocket.onopen = (event) => {
-			console.log("SOCKET CONNECTED ", event);
+      this.messagesWebsocket.send(
+        JSON.stringify({ event: "connected", data: null })
+      );
+    };
 
-			this.messagesWebsocket.send(
-				JSON.stringify({ event: "connected", data: null })
-			);
-		};
+    this.messagesWebsocket.onerror = (event) => {
+      console.log("SOCKET ERRROR ", event);
+    };
 
-		this.messagesWebsocket.onerror = (event) => {
-			console.log("SOCKET ERRROR ", event);
-		};
+    this.messagesWebsocket.onclose = (event) => {
+      console.log("SOCKET Disconnected", event);
+    };
+  }
 
-		this.messagesWebsocket.onclose = (event) => {
-			console.log("SOCKET Disconnected", event);
-		};
-	}
+  closeMessagesWebsocket() {
+    this.messagesWebsocket.send(JSON.stringify({ event: "close", data: null }));
 
-	closeMessagesWebsocket() {
-		this.messagesWebsocket.send(JSON.stringify({ event: "close", data: null }));
-
-		this.messagesWebsocket.close();
-	}
+    this.messagesWebsocket.close();
+  }
 
   onSubmit(message) {
     message = message?.trim() ?? "";
@@ -183,19 +184,19 @@ export class ChatContainer extends WebComponent {
       "grid";
     this.getChild("#onbotgo-micrecord").style.display = "none";
     this.updateScrollbar();
-  	if (this.chattingWith === "human_agent") {
-			sendMessage({
-				content: `${payload.message}\n${payload.url}`,
-				conversation_id: appConfig.messageHistoryId,
-				channel_id: appConfig.chathubChannelId,
-				sender: "user",
-			}).finally(()=>{
+    if (this.chattingWith === "human_agent") {
+      sendMessage({
+        content: `${payload.message}\n${payload.url}`,
+        conversation_id: appConfig.messageHistoryId,
+        channel_id: appConfig.chathubChannelId,
+        sender: "user",
+      }).finally(() => {
         this.messagesContainer
-        .querySelectorAll(".loading-api-message")
-        ?.forEach((node) => node.remove());
+          .querySelectorAll(".loading-api-message")
+          ?.forEach((node) => node.remove());
       });
-			return;
-		}
+      return;
+    }
     if (payload.url.length)
       payload.url.forEach((url) => {
         getPrediction({
@@ -205,9 +206,9 @@ export class ChatContainer extends WebComponent {
         })
           .then((apiMessage) => {
             // if (!apiMessage.success) throw new Error(apiMessage.msg);
-            if (apiMessage?.unique_id){
+            if (apiMessage?.unique_id) {
               appConfig.messageHistoryId = apiMessage.unique_id;
-              this.initMessagesWebsocket(appConfig.messageHistoryId)
+              this.initMessagesWebsocket(appConfig.messageHistoryId);
             }
             if (apiMessage?.data?.process?.length)
               apiMessage.data.process.forEach((process) => {
@@ -223,8 +224,8 @@ export class ChatContainer extends WebComponent {
             this.addMessages([
               { message: apiMessage.response, type: "apiMessage" },
             ]);
-            if(apiMessage.redirect){
-              this.chattingWith='human_agent'
+            if (apiMessage.redirect) {
+              this.chattingWith = "human_agent";
             }
           })
           .catch((err) => console.log(err))
@@ -240,9 +241,9 @@ export class ChatContainer extends WebComponent {
       getPrediction(payload)
         .then((apiMessage) => {
           // if (!apiMessage.success) throw new Error(apiMessage.msg);
-          if (apiMessage?.unique_id){
+          if (apiMessage?.unique_id) {
             appConfig.messageHistoryId = apiMessage.unique_id;
-            this.initMessagesWebsocket(appConfig.messageHistoryId)
+            this.initMessagesWebsocket(appConfig.messageHistoryId);
           }
           if (apiMessage?.data?.process?.length)
             apiMessage.data.process.forEach((process) => {
@@ -259,10 +260,9 @@ export class ChatContainer extends WebComponent {
             { message: apiMessage.response, type: "apiMessage" },
           ]);
 
-          if(apiMessage.redirect){
-            this.chattingWith='human_agent'
+          if (apiMessage.redirect) {
+            this.chattingWith = "human_agent";
           }
-
         })
         .catch((err) => console.log(err))
         .finally(() => {
@@ -349,17 +349,21 @@ export class ChatContainer extends WebComponent {
     this.renderAttachTemplate();
   }
 
-  renderMessages(messages) {
+  renderMessages(messages, isAgent = false) {
     messages.forEach(
       (m) =>
         !["dataMessage"].includes(m.type) &&
-        this.messagesContainer.appendChild(new chatMessage(m))
+        this.messagesContainer.appendChild(new chatMessage(m, isAgent))
     );
   }
 
-  addMessages(messages, { updateScrollbar } = { updateScrollbar: false }) {
+  addMessages(
+    messages,
+    { updateScrollbar } = { updateScrollbar: false },
+    isAgent = false
+  ) {
     this.messagesHistory = this.messagesHistory.concat(messages);
-    this.renderMessages(messages);
+    this.renderMessages(messages, isAgent);
     if (updateScrollbar) this.updateScrollbar();
   }
 

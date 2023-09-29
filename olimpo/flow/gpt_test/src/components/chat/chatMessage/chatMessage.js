@@ -3,13 +3,18 @@ import template from "./template.html?raw";
 import WaveSurfer from "wavesurfer.js";
 import iconPlay from "./../../../assets/icons/play.svg?raw";
 import IconPause from "./../../../assets/icons/pause.svg?raw";
+import { Box } from "./../../box/box";
+import robotImage from "./../../../assets/images/robot.png";
+import agentImage from "./../../../assets/images/agent.png";
+import userImage from "./../../../assets/images/user.png";
+import { theme } from "../../../app-state/theme";
 
 const tag = "onbotgo-chatmessage";
 export class chatMessage extends WebComponent {
   wavesurfer;
   message;
 
-  constructor(message) {
+  constructor(message, isAgent = false) {
     super();
     this.message = message;
     this.setStyles({
@@ -18,6 +23,7 @@ export class chatMessage extends WebComponent {
       minHeight: "max(45px, fit-content)",
       justifyContent:
         message.type === "userMessage" ? "flex-end" : "flex-start",
+      alignItems: "center",
     });
     this.innerHTML = this.renderHTML(template, {
       type: message.type,
@@ -56,12 +62,19 @@ export class chatMessage extends WebComponent {
       image.style.minWidth = "100px";
       image.style.maxHeight = "80%";
       image.style.maxWidth = "80%";
-
       this.querySelector(".onbotgo-message").appendChild(image);
     } else if (!message.fileType && message.type === "userMessage") {
-      this.querySelector(".onbotgo-message").innerText += message.message;
+      const messageContainer = this.querySelector(".onbotgo-message");
+      this.appendChild(this.getAvatarMessage("userMessage"));
+      messageContainer.innerText += message.message;
     } else if (!message.fileType && message.type === "apiMessage") {
-      this.querySelector(".onbotgo-message").innerHTML += message.message;
+      console.log({ isAgent });
+      const messageContainer = this.querySelector(".onbotgo-message");
+      this.insertBefore(
+        this.getAvatarMessage("apiMessage", isAgent),
+        messageContainer
+      );
+      messageContainer.innerHTML += message.message;
     }
     if (message.type === "LoadingMessage") this.setLoadingAnimation();
   }
@@ -95,6 +108,26 @@ export class chatMessage extends WebComponent {
       })
     );
   }
+
+  getAvatarMessage(from = "api", isAgent = false) {
+    const box = new Box();
+    let image;
+    if (from === "apiMessage" && !isAgent) image = robotImage;
+    else if (from === "userMessage") image = userImage;
+    else if (isAgent) image = agentImage;
+    box.innerHTML = `<img src=${image} width="${25}" height="${25}" />`;
+    box.setStyles({
+      padding: "5px",
+      marginRight: "10px",
+      backgroundColor: theme.colors.primary,
+      borderRadius: "100px",
+      width: "35px !important",
+      height: "25px",
+      display: "grid",
+      placeItems: "center",
+    });
+    return box;
+  }
 }
 
 chatMessage.tag = tag;
@@ -110,11 +143,10 @@ export const getChatMessageStyles = (theme) => ({
   },
   [`${tag} > .from-chatbot`]: {
     width: "100%",
-    content: "",
     overflow: "hidden",
     position: "relative",
     color: "black",
-    "max-width": "75%",
+    "max-width": "65%",
     "z-index": 1,
   },
   [`${tag} .bg-semi-transp`]: {
@@ -129,7 +161,7 @@ export const getChatMessageStyles = (theme) => ({
   },
   [`${tag} > .from-user`]: {
     "margin-right": "15px",
-    "max-width": "70%",
+    "max-width": "65%",
     "background-color": theme.colors.primary,
   },
   [`${tag} .loading-api-message`]: {
