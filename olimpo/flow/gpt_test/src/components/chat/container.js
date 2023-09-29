@@ -138,6 +138,7 @@ export class ChatContainer extends WebComponent {
     const history = structuredClone(this.messagesHistory);
     history.splice(0, 1);
     const payload = {
+      channel_id: appConfig.chathubChannelId,
       message:
         this.attachedFiles.length && !message && !this.attachedRecord
           ? "Adjunto comprobante de pago"
@@ -188,7 +189,11 @@ export class ChatContainer extends WebComponent {
 				conversation_id: appConfig.messageHistoryId,
 				channel_id: appConfig.chathubChannelId,
 				sender: "user",
-			});
+			}).finally(()=>{
+        this.messagesContainer
+        .querySelectorAll(".loading-api-message")
+        ?.forEach((node) => node.remove());
+      });
 			return;
 		}
     if (payload.url.length)
