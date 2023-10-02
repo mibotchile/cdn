@@ -3,11 +3,11 @@ import { BubbleIconToggler } from "./bubble/bubbleIconToggler";
 import { ChatContainer } from "./chat/container";
 
 import { WebComponent } from "./webComponent";
-
+const tag = "onbotgo-chatbot";
 class widgetContainer extends WebComponent {
   componentStyles = {
     display: "inline-block",
-    position: "absolute",
+    position: "fixed",
     bottom: "20px",
     right: "20px",
   };
@@ -28,6 +28,11 @@ class widgetContainer extends WebComponent {
   connectedCallback() {}
 }
 
-widgetContainer.tag = "onbotgo-chatbot";
+widgetContainer.tag = tag;
 
+export const getWidgetContainerInlineStyle = () => ({
+  [`${tag} *, ::before, ::after`]: {
+    "box-sizing": "content-box !important",
+  },
+});
 export default widgetContainer;

@@ -1,4 +1,6 @@
-import WidgetContainer from "./components/widgetContainer";
+import WidgetContainer, {
+  getWidgetContainerInlineStyle,
+} from "./components/widgetContainer";
 
 import {
   BubbleIconToggler,
@@ -28,7 +30,12 @@ import { FabButton } from "./components/buttons/filled/filledButton";
 import { MicRecord } from "./components/chat/record/record";
 
 export default class Chatbot {
-  constructor({ chatflow,chathubChannelId, theme: customTheme, welcomeMessage }) {
+  constructor({
+    chatflow,
+    chathubChannelId,
+    theme: customTheme,
+    welcomeMessage,
+  }) {
     appConfig.chatflowID = chatflow;
     appConfig.chathubChannelId = chathubChannelId;
     if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
@@ -73,9 +80,9 @@ export default class Chatbot {
         getChatMessageStyles(theme),
         getChatInputStyles(theme),
         getChatContainerStyles(theme),
+        getWidgetContainerInlineStyle(),
       ],
     });
-
     document.body.appendChild(widgetContainer);
   }
 

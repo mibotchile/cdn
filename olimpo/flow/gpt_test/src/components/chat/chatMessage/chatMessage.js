@@ -68,7 +68,6 @@ export class chatMessage extends WebComponent {
       this.appendChild(this.getAvatarMessage("userMessage"));
       messageContainer.innerText += message.message;
     } else if (!message.fileType && message.type === "apiMessage") {
-      console.log({ isAgent });
       const messageContainer = this.querySelector(".onbotgo-message");
       this.insertBefore(
         this.getAvatarMessage("apiMessage", isAgent),
