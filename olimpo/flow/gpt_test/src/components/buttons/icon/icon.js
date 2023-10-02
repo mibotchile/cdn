@@ -14,7 +14,7 @@ export class IconButton extends WebComponent {
       position: "relative",
       cursor: "pointer",
       borderRadius: "200px",
-      padding: "7px",
+      padding: "2px",
       boxSizing: "border-box",
     });
 
@@ -37,9 +37,9 @@ export class IconButton extends WebComponent {
       backgroundColor: color,
       opacity: 0.2,
       position: "absolute",
-      width: "100%",
+      width: size ?? "100%",
       borderRadius: "200px",
-      height: "100%",
+      height: size ?? "100%",
       zIndex: 0,
     });
     this.appendChild(backgroundColor);
