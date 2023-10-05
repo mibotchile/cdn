@@ -63,7 +63,6 @@ export class ChatContainer extends WebComponent {
   constructor() {
     super();
     this.setStyles(this.defaultStyles);
-    this.classList.add("hidden");
     this.render();
     this.addEventListener("onbotgo-delete-record", () => {
       this.isRecordSelected = false;
