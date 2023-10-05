@@ -139,6 +139,7 @@ export const getChatMessageStyles = (theme) => ({
     "align-items": "center",
     padding: "15px 15px",
     color: "white",
+    "font-size": "14px",
   },
   [`${tag} > .from-chatbot`]: {
     width: "100%",
