@@ -432,9 +432,9 @@ export class ChatContainer extends WebComponent {
     this.header.style.width = "100%";
     this.header.style.justifyContent = "center";
     this.header.style.backgroundColor = theme.colors.primary;
-    const logoHeader = this.header.getChild("img");
-    logoHeader.src = tarjetaOhLogo;
-    logoHeader.style.objectFit = "cover";
+    // const logoHeader = this.header.getChild("img");
+    // logoHeader.src = tarjetaOhLogo;
+    // logoHeader.style.objectFit = "cover";
 
     this.getChild("#onbotgo-btnrecordSend").style.display = "none";
     this.querySelector("#onbotgo-btnrecord").onclick = () => {
