@@ -183,6 +183,10 @@ export class ChatContainer extends WebComponent {
       "grid";
     this.getChild("#onbotgo-micrecord").style.display = "none";
     this.updateScrollbar();
+    const inputElement = this.getChild("input[type=text]");
+    inputElement.disabled = true;
+    this.getChild("#onbotgo-chatinput").style.backgroundColor =
+      "rgba(239,239,239,.6)";
     if (this.chattingWith === "human_agent") {
       sendMessage({
         content: `${payload.message}\n${payload.url}`,
@@ -234,6 +238,8 @@ export class ChatContainer extends WebComponent {
               ?.forEach((node) => node.remove());
 
             this.updateScrollbar();
+            inputElement.disabled = false;
+            this.getChild("#onbotgo-chatinput").style.backgroundColor = "white";
           });
       });
     else
@@ -268,6 +274,9 @@ export class ChatContainer extends WebComponent {
           this.messagesContainer
             .querySelectorAll(".loading-api-message")
             ?.forEach((node) => node.remove());
+          inputElement.disabled = false;
+          inputElement.disabled = false;
+          this.getChild("#onbotgo-chatinput").style.backgroundColor = "white";
 
           this.updateScrollbar();
         });

@@ -24,8 +24,6 @@ class widgetContainer extends WebComponent {
 
     this.setStyles(this.componentStyles);
   }
-
-  connectedCallback() {}
 }
 
 widgetContainer.tag = tag;
