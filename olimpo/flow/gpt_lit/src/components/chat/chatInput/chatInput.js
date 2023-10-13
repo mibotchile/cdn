@@ -11,7 +11,7 @@ export class ChatInput extends LitElement {
       outline: none;
       border: none;
       height: 100%;
-      padding: "0 10px";
+      padding: 0 10px;
       max-width: calc(100vw - 129px);
       font-size: 14px;
     }

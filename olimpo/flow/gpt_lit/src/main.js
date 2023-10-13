@@ -4,10 +4,16 @@ import { theme } from "./app-config/theme.js";
 //COMPONENTS
 import "./components/bubble/bubble.js";
 import "./components/widgetContainer.js";
-import "./components/chat/container.js";
+import "./components/chat/container/container.js";
 import "./components/chat/chatInput/chatInput.js";
+import "./components/chat/attachFile/attachFile.js";
+import "./components/chat/chatMessage/chatMessage.js";
 import "./components/shared/box/box.js";
 import "./components/shared/buttons/icon/iconButton.js";
+import "./components/shared/buttons/fab/raisedButton.js";
+import "./components/shared/spinner/spinner.js";
+import "./components/shared/dropdown/dropdown.js";
+import "./components/shared/dropdown/dropdownContent.js";
 
 export default class Chatbot {
   constructor({

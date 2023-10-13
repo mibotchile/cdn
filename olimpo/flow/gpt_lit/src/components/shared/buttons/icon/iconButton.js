@@ -1,4 +1,4 @@
-import { LitElement, css, html, unsafeCSS } from "lit";
+import { LitElement, css, html } from "lit";
 
 const tag = `onbotgo-iconbutton`;
 
@@ -17,6 +17,7 @@ export class IconButton extends LitElement {
     button {
       display: grid;
       place-items: center;
+      cursor: pointer;
       background-color: transparent;
       border: none;
     }
