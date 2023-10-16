@@ -13,5 +13,8 @@
   },
   "volta": {
     "node": "18.17.0"
+  },
+  "dependencies": {
+    "toastify-js": "^1.12.0"
   }
 }

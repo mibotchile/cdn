@@ -13,10 +13,12 @@ import paperclip from "./../../assets/icons/paperclip.svg?raw";
 import trashIcon from "./../../assets/icons/trashIcon.svg?raw";
 import iconPlus from "./../../assets/icons/plus.svg?raw";
 import sendIcon from "./../../assets/icons/send.svg?raw";
+import robotImage from "./../../assets/images/robot.png";
 import { appConfig } from "../../app-state/config";
 import { SessionStorage } from "../../app-state/SessionStorage";
 import { theme } from "../../app-state/theme";
 import { uploadFile } from "../../api/uploadFile";
+import Toastify from "toastify-js";
 
 const tag = "onbotgo-chatcontainer";
 export class ChatContainer extends WebComponent {
@@ -227,6 +229,8 @@ export class ChatContainer extends WebComponent {
             this.addMessages([
               { message: apiMessage.response, type: "apiMessage" },
             ]);
+
+            if (apiMessage.thought) this.showBotThought(apiMessage.thought);
             if (apiMessage.redirect) {
               this.chattingWith = "human_agent";
             }
@@ -268,6 +272,7 @@ export class ChatContainer extends WebComponent {
           if (apiMessage.redirect) {
             this.chattingWith = "human_agent";
           }
+          if (apiMessage.thought) this.showBotThought(apiMessage.thought);
         })
         .catch((err) => console.log(err))
         .finally(() => {
@@ -292,6 +297,23 @@ export class ChatContainer extends WebComponent {
       if (this.messagesContainer.scrollTop > 0)
         this.scrollBar.style.visibility = "visible";
     }
+  }
+
+  showBotThought(thought) {
+    Toastify({
+      text: `<div style="display:flex;align-items:center;gap:10px"><img src="${robotImage}" width="30" height="30" /> ${thought}</div>`,
+      duration: 3000,
+      newWindow: true,
+      gravity: "bottom",
+      escapeMarkup: false,
+      position: "center",
+      style: {
+        background: theme.colors.primary,
+      },
+      stopOnFocus: true,
+
+      onClick: function () {}, // Callback after click
+    }).showToast();
   }
 
   async attachFile(e) {

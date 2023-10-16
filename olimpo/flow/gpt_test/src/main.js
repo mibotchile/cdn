@@ -28,6 +28,7 @@ import { IconButton } from "./components/buttons/icon/icon";
 import { Dropdown } from "./components/dropdownMenu/dropdown";
 import { FabButton } from "./components/buttons/filled/filledButton";
 import { MicRecord } from "./components/chat/record/record";
+import "toastify-js/src/toastify.css";
 
 export default class Chatbot {
   constructor({
