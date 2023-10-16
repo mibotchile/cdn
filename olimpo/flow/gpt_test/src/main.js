@@ -28,7 +28,8 @@ import { IconButton } from "./components/buttons/icon/icon";
 import { Dropdown } from "./components/dropdownMenu/dropdown";
 import { FabButton } from "./components/buttons/filled/filledButton";
 import { MicRecord } from "./components/chat/record/record";
-import "toastify-js/src/toastify.css";
+
+import toastifyStyles from "toastify-js/src/toastify.css?inline";
 
 export default class Chatbot {
   constructor({
@@ -84,6 +85,9 @@ export default class Chatbot {
         getWidgetContainerInlineStyle(),
       ],
     });
+    const styles = document.createElement("style");
+    styles.innerHTML = toastifyStyles;
+    widgetContainer.prepend(styles);
     document.body.appendChild(widgetContainer);
   }
 
