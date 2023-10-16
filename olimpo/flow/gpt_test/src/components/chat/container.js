@@ -309,6 +309,8 @@ export class ChatContainer extends WebComponent {
       position: "center",
       style: {
         background: theme.colors.primary,
+        fontFamily: theme.typography.primary,
+        cursor: "normal",
       },
       stopOnFocus: true,
 
