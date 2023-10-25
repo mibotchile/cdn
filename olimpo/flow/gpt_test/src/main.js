@@ -1,20 +1,20 @@
 import WidgetContainer from "./components/widgetContainer";
 
 import {
-  BubbleIconToggler,
-  getBubbleIconTogglerStyles,
+	BubbleIconToggler,
+	getBubbleIconTogglerStyles,
 } from "./components/bubble/bubbleIconToggler";
 import {
-  ChatContainer,
-  getChatContainerStyles,
+	ChatContainer,
+	getChatContainerStyles,
 } from "./components/chat/container";
 import {
-  chatMessage,
-  getChatMessageStyles,
+	chatMessage,
+	getChatMessageStyles,
 } from "./components/chat/chatMessage/chatMessage";
 import {
-  ChatInput,
-  getChatInputStyles,
+	ChatInput,
+	getChatInputStyles,
 } from "./components/chat/chatInput/chatInput";
 import { Box } from "./components/box/box";
 
@@ -28,58 +28,65 @@ import { FabButton } from "./components/buttons/filled/filledButton";
 import { MicRecord } from "./components/chat/record/record";
 
 export default class Chatbot {
-  constructor({ chatflow,chathubChannelId, theme: customTheme, welcomeMessage }) {
-    appConfig.chatflowID = chatflow;
-    appConfig.chathubChannelId = chathubChannelId;
-    if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
+	constructor({
+		chatflow,
+		chathubChannelId,
+		projectPath,
+		theme: customTheme,
+		welcomeMessage,
+	}) {
+		appConfig.chatflowID = chatflow;
+		appConfig.projectPath = projectPath;
+		appConfig.chathubChannelId = chathubChannelId;
+		if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
 
-    if (!customTheme) return;
-    const { typography, colors, icon } = customTheme;
+		if (!customTheme) return;
+		const { typography, colors, icon } = customTheme;
 
-    if (typography)
-      Object.keys(typography).forEach(
-        (typo) => (theme.typography[typo] = typography[typo])
-      );
+		if (typography)
+			Object.keys(typography).forEach(
+				(typo) => (theme.typography[typo] = typography[typo])
+			);
 
-    if (colors)
-      Object.keys(colors).forEach(
-        (color) => (theme.colors[color] = colors[color])
-      );
+		if (colors)
+			Object.keys(colors).forEach(
+				(color) => (theme.colors[color] = colors[color])
+			);
 
-    if (icon) theme.customIcon = icon;
-  }
+		if (icon) theme.customIcon = icon;
+	}
 
-  init() {
-    this.registerComponents(
-      WidgetContainer,
-      BubbleIconToggler,
-      ChatContainer,
-      chatMessage,
-      ChatInput,
-      Box,
-      CustomScrollBar,
-      IconButton,
-      Dropdown,
-      FabButton,
-      MicRecord
-    );
+	init() {
+		this.registerComponents(
+			WidgetContainer,
+			BubbleIconToggler,
+			ChatContainer,
+			chatMessage,
+			ChatInput,
+			Box,
+			CustomScrollBar,
+			IconButton,
+			Dropdown,
+			FabButton,
+			MicRecord
+		);
 
-    const widgetContainer = new WidgetContainer();
+		const widgetContainer = new WidgetContainer();
 
-    addInlineStylesToElement({
-      element: widgetContainer,
-      styles: [
-        getBubbleIconTogglerStyles(theme),
-        getChatMessageStyles(theme),
-        getChatInputStyles(theme),
-        getChatContainerStyles(theme),
-      ],
-    });
+		addInlineStylesToElement({
+			element: widgetContainer,
+			styles: [
+				getBubbleIconTogglerStyles(theme),
+				getChatMessageStyles(theme),
+				getChatInputStyles(theme),
+				getChatContainerStyles(theme),
+			],
+		});
 
-    document.body.appendChild(widgetContainer);
-  }
+		document.body.appendChild(widgetContainer);
+	}
 
-  registerComponents(...classComponents) {
-    classComponents.forEach((comp) => customElements.define(comp.tag, comp));
-  }
+	registerComponents(...classComponents) {
+		classComponents.forEach((comp) => customElements.define(comp.tag, comp));
+	}
 }
