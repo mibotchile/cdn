@@ -21,7 +21,9 @@ export class ChatInput extends LitElement {
     }
     .send-icon-box {
       width: 100%;
-      display: inline-block;
+      display: grid;
+      height: 100%;
+      place-items: center;
     }
     :host {
       height: 50px;
@@ -31,11 +33,45 @@ export class ChatInput extends LitElement {
       border-radius: 8px;
       box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.1);
     }
+    .bg-gray {
+      background-color: #f9f9f9;
+    }
   `;
 
+  static properties = {
+    onSubmit: { type: Function },
+    message: { type: String },
+    updateMessage: { type: Function },
+    isDisabled: { type: Boolean },
+  };
+
+  constructor() {
+    super();
+  }
+
+  handleSubmit() {
+    this.onSubmit(this.message);
+    this.message = "";
+    this.renderRoot.querySelector("input").value = "";
+  }
+
+  onkeydownHandler(e) {
+    if (!["13", "Enter"].includes(e.key)) return;
+    this.handleSubmit(e.target.value);
+  }
+
   render() {
-    return html`<input type="text" placeholder="Escribe un mensaje" />
-      <onbotgo-box class="send-icon-box">
+    return html`<input
+        type="text"
+        placeholder="Escribe un mensaje"
+        @keydown=${(e) => this.onkeydownHandler(e)}
+        @input=${(e) => this.updateMessage(e)}
+        ?disabled=${this.isDisabled}
+      />
+      <onbotgo-box
+        class="send-icon-box ${this.isDisabled ? "bg-gray" : ""}"
+        @click=${this.handleSubmit}
+      >
         ${parseStringToHtml(sendIcon)}
       </onbotgo-box>`;
   }
