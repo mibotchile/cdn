@@ -35,10 +35,12 @@ export default class Chatbot {
   constructor({
     chatflow,
     chathubChannelId,
+    projectPath,
     theme: customTheme,
     welcomeMessage,
   }) {
     appConfig.chatflowID = chatflow;
+    appConfig.projectPath = projectPath;
     appConfig.chathubChannelId = chathubChannelId;
     if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
 

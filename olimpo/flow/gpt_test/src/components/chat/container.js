@@ -94,8 +94,9 @@ export class ChatContainer extends WebComponent {
       console.log("WS MESSAGES IS CONNECTED ", this.messagesWebsocket);
       return;
     }
-    const url = `wss://endpoint-prod-chatgpt.mibot.cl:8080/messages/${conversationId}/ws`;
+    const url = `wss://endpoint-prod-chatgpt.mibot.cl:8080${appConfig.projectPath}messages/${conversationId}/ws`;
     this.messagesWebsocket = new WebSocket(url);
+    console.log(this.messagesWebsocket);
 
     this.messagesWebsocket.onmessage = (event) => {
       const data = JSON.parse(event.data);

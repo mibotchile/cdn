@@ -3,8 +3,9 @@ export class AppConfig {
   storage_url = "https://helpers.mibot.cl:444";
   messageHistoryId = "";
   chatflowID = "";
-  socketUid = "";
   welcomeMessage = "¡Hola! ¿En qué puedo ayudarte hoy?";
+  chathubChannelId = "";
+  projectPath = "/";
 }
 
 export const appConfig = new AppConfig();
