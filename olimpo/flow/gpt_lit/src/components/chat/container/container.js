@@ -132,7 +132,6 @@ export class ChatContainer extends LitElement {
   }
 
   addMessageAndUpdateScroll(...messages) {
-    console.log(messages);
     this.messagesHistory = [...this.messagesHistory, ...messages];
     setTimeout(() => this.updateScrollbar(), 0);
   }

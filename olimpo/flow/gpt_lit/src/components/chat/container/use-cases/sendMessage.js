@@ -3,8 +3,16 @@ import {
   sendMessageApi,
   getPrediction,
 } from "../../../../../../gpt_test/src/api/sendMessage";
+import { redirectConversation } from "../../../../services/websockets/redirect";
+const redirectWebSocket = new redirectConversation();
 
-export const sendMessage = async ({ message, files, record, chattingWith }) => {
+export const sendMessage = async ({
+  message,
+  files,
+  record,
+  chattingWith,
+  addMessages,
+}) => {
   const payload = {
     channel_id: appSetupConfig.chathubChannelId,
     message: message,
@@ -26,11 +34,13 @@ export const sendMessage = async ({ message, files, record, chattingWith }) => {
       const apiMessage = await getPrediction({
         ...payload,
         message: `envio comprobante de pago, esta es la url "${url}"`,
-      }).catch((err) => console.log(err));
+      })
+        .then(() => {})
+        .catch((err) => console.log(err));
       results.push({ content: apiMessage.response, type: "apiMessage" });
       if (apiMessage?.unique_id) {
         appSetupConfig.messageHistoryId = apiMessage.unique_id;
-        // initMessagesWebsocket(appSetupConfig.messageHistoryId);
+        redirectWebSocket.init(appSetupConfig.messageHistoryId);
       }
     }
 
@@ -40,7 +50,7 @@ export const sendMessage = async ({ message, files, record, chattingWith }) => {
       .then((apiMessage) => {
         if (apiMessage?.unique_id) {
           appSetupConfig.messageHistoryId = apiMessage.unique_id;
-          //   this.initMessagesWebsocket(appSetupConfig.messageHistoryId);
+          redirectWebSocket.init(appSetupConfig.messageHistoryId);
         }
         results.push({ ...apiMessage, content: apiMessage.response });
       })

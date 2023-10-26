@@ -40,7 +40,7 @@ export default class Chatbot {
     welcomeMessage,
   }) {
     appConfig.chatflowID = chatflow;
-    appConfig.projectPath = projectPath;
+    if (projectPath) appConfig.projectPath = projectPath;
     appConfig.chathubChannelId = chathubChannelId;
     if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
 

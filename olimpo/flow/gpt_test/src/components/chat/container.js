@@ -68,24 +68,24 @@ export class ChatContainer extends WebComponent {
     this.addEventListener("onbotgo-delete-record", () => {
       this.isRecordSelected = false;
       this.attachedRecord = null;
-      this.getChild("#onbotgo-btnrecordSend").style.display = "none";
-      this.getChild("#onbotgo-btnrecord").style.display = "grid";
+      // this.getChild("#onbotgo-btnrecordSend").style.display = "none";
+      // this.getChild("#onbotgo-btnrecord").style.display = "grid";
       this.getChild("#onbotgo-chatinput").style.display = "grid";
       this.getChild("#onbotgo-attachFileTemplateContainer").style.display =
         "grid";
-      this.getChild("#onbotgo-micrecord").style.display = "none";
+      // this.getChild("#onbotgo-micrecord").style.display = "none";
       this.updateScrollbar();
     });
     this.addEventListener("onbotgo-stop-record", (record) => {
       this.attachedRecord = record.detail;
-      this.getChild("#onbotgo-btnrecordSend").onclick = () => {
-        this.onSubmit();
-        this.getChild("#onbotgo-chatinput").style.display = "grid";
-        this.getChild("#onbotgo-btnrecord").style.display = "grid";
-        this.getChild("#onbotgo-btnrecordSend").style.display = "none";
-        this.renderAttachTemplate();
-        this.getChild("#onbotgo-btnrecordSend").onclick = () => {};
-      };
+      // this.getChild("#onbotgo-btnrecordSend").onclick = () => {
+      //   this.onSubmit();
+      //   this.getChild("#onbotgo-chatinput").style.display = "grid";
+      //   this.getChild("#onbotgo-btnrecord").style.display = "grid";
+      //   this.getChild("#onbotgo-btnrecordSend").style.display = "none";
+      //   this.renderAttachTemplate();
+      //   this.getChild("#onbotgo-btnrecordSend").onclick = () => {};
+      // };
     });
   }
 
@@ -184,7 +184,7 @@ export class ChatContainer extends WebComponent {
     this.getChild("#onbotgo-chatinput").style.display = "grid";
     this.getChild("#onbotgo-attachFileTemplateContainer").style.display =
       "grid";
-    this.getChild("#onbotgo-micrecord").style.display = "none";
+    // this.getChild("#onbotgo-micrecord").style.display = "none";
     this.updateScrollbar();
     const inputElement = this.getChild("input[type=text]");
     inputElement.disabled = true;
@@ -197,6 +197,7 @@ export class ChatContainer extends WebComponent {
         channel_id: appConfig.chathubChannelId,
         sender: "user",
       }).finally(() => {
+        this.querySelector("input").focus();
         this.messagesContainer
           .querySelectorAll(".loading-api-message")
           ?.forEach((node) => node.remove());
@@ -245,6 +246,7 @@ export class ChatContainer extends WebComponent {
             this.updateScrollbar();
             inputElement.disabled = false;
             this.getChild("#onbotgo-chatinput").style.backgroundColor = "white";
+            inputElement.focus();
           });
       });
     else
@@ -281,9 +283,8 @@ export class ChatContainer extends WebComponent {
             .querySelectorAll(".loading-api-message")
             ?.forEach((node) => node.remove());
           inputElement.disabled = false;
-          inputElement.disabled = false;
           this.getChild("#onbotgo-chatinput").style.backgroundColor = "white";
-
+          inputElement.focus();
           this.updateScrollbar();
         });
   }
@@ -455,7 +456,7 @@ export class ChatContainer extends WebComponent {
     });
     this.renderAttachTemplate();
 
-    const micRecord = this.querySelector("onbotgo-micrecord");
+    // const micRecord = this.querySelector("onbotgo-micrecord");
     const dropdown = this.querySelector("onbotgo-dropdown");
     this.messagesContainer = this.querySelector("#onbotgo-messageContainer");
 
@@ -470,18 +471,18 @@ export class ChatContainer extends WebComponent {
     // logoHeader.src = tarjetaOhLogo;
     // logoHeader.style.objectFit = "cover";
 
-    this.getChild("#onbotgo-btnrecordSend").style.display = "none";
-    this.querySelector("#onbotgo-btnrecord").onclick = () => {
-      this.isRecordSelected = true;
-      this.getChild("#onbotgo-btnrecord").style.display = "none";
-      this.getChild("#onbotgo-btnrecordSend").style.display = "grid";
-      this.getChild("#onbotgo-chatinput").style.display = "none";
-      this.getChild("#onbotgo-attachFileTemplateContainer").style.display =
-        "none";
-      this.getChild("#onbotgo-micrecord").style.display = "flex";
-      this.renderAttachTemplate();
-      this.updateScrollbar();
-    };
+    // this.getChild("#onbotgo-btnrecordSend").style.display = "none";
+    // this.querySelector("#onbotgo-btnrecord").onclick = () => {
+    //   this.isRecordSelected = true;
+    //   this.getChild("#onbotgo-btnrecord").style.display = "none";
+    //   this.getChild("#onbotgo-btnrecordSend").style.display = "grid";
+    //   this.getChild("#onbotgo-chatinput").style.display = "none";
+    //   this.getChild("#onbotgo-attachFileTemplateContainer").style.display =
+    //     "none";
+    //   // this.getChild("#onbotgo-micrecord").style.display = "flex";
+    //   this.renderAttachTemplate();
+    //   this.updateScrollbar();
+    // };
 
     this.chatInput.onSubmit(this.onSubmit.bind(this));
     this.renderMessages(this.messagesHistory);
@@ -489,12 +490,12 @@ export class ChatContainer extends WebComponent {
     if (this.isRecordSelected) {
       dropdown.style.display = "none";
       this.chatInput.style.display = "none";
-      micRecord.style.display = "flex";
+      // micRecord.style.display = "flex";
     } else {
       dropdown.style.display = "grid";
       this.btnattachNewFile.style.display = "grid";
       this.chatInput.style.display = "grid";
-      micRecord.style.display = "none";
+      // micRecord.style.display = "none";
     }
   }
 }
