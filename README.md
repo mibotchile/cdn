@@ -1,6 +1,49 @@
-# cdn
 
-CDN OnbotGo
+# OLIMPO FLOW CDN
 
-Link base
-https://cdn.jsdelivr.net/gh/mibotchile/cdn@0.1/olimpo/flow/gpt/
+el proyecto esta divido en 3 carpetas:
+ - GPT: Es el primer proyecto creado, esta hecho con vite y vanilla javascript.
+ - GPT_lit: Migración del primer proyecto a Lit.
+ - GPT_test: Copia del primer proyecto con features nuevas de tarjeta oh.
+
+## Publicación de una nueva versión
+1. Hacer build del proyecto:
+```
+pnpm build
+```
+2. Subir cambios del proyecto:
+```
+git push
+```
+3. Crear una nueva release en github.
+
+
+
+
+
+## Levantar localmente
+
+Clonar el proyecto
+
+```bash
+  git clone https://github.com/mibotchile/cdn.git
+```
+
+Ir al directorio del proyecto (ejemplo):
+
+```bash
+  cd olimpo/flow/gpt_lit
+```
+
+Instalar las dependencias
+
+```bash
+  pnpm i
+```
+
+Levantar el server
+
+```bash
+  pnpm dev
+```
+
