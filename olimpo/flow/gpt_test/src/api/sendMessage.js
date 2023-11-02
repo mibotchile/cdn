@@ -1,5 +1,5 @@
 import { appConfig } from "../app-state/config";
-console.log(appConfig);
+
 export const getPrediction = async (data) =>
   await fetch(`${appConfig.gpt_url}${appConfig.projectPath}chat`, {
     headers: {

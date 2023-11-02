@@ -32,6 +32,9 @@ export class Spinner extends LitElement {
     div:nth-child(3) {
       animation-delay: -0.15s;
     }
+    .white {
+      border-color: white transparent transparent transparent;
+    }
     @keyframes onbotgo-lds-ring {
       0% {
         transform: rotate(0deg);
@@ -41,11 +44,15 @@ export class Spinner extends LitElement {
       }
     }
   `;
+
+  static properties = {
+    color: { type: String },
+  };
   render() {
-    return html` <div></div>
-      <div></div>
-      <div></div>
-      <div></div>`;
+    return html` <div class="${this.color}"></div>
+      <div class="${this.color}"></div>
+      <div class="${this.color}"></div>
+      <div class="${this.color}"></div>`;
   }
 }
 customElements.define(tag, Spinner);

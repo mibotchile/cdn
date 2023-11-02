@@ -1,4 +1,4 @@
-export class appSetupConfig {
+class appSetupConfig {
   chatflowID = "";
   welcomeMessage = "¡Hola! ¿En qué puedo ayudarte hoy?";
   messageHistoryId = "";

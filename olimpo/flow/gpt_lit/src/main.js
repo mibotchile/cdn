@@ -1,4 +1,4 @@
-import { appSetupConfig } from "./app-config/setup.js";
+import { appConfig } from "./app-config/setup.js";
 import { theme } from "./app-config/theme.js";
 
 //COMPONENTS
@@ -15,19 +15,24 @@ import "./components/shared/spinner/spinner.js";
 import "./components/shared/dropdown/dropdown.js";
 import "./components/shared/dropdown/dropdownContent.js";
 
+import toastifyStyles from "toastify-js/src/toastify.css?inline";
+
 export default class Chatbot {
   constructor({
     chatflow,
     chathubChannelId,
     theme: customTheme,
     welcomeMessage,
+    projectPath,
   }) {
     let root = document.querySelector(":root");
 
-    appSetupConfig.chatflowID = chatflow;
-    appSetupConfig.chathubChannelId = chathubChannelId;
+    appConfig.chatflowID = chatflow;
+    appConfig.chathubChannelId = chathubChannelId;
+    if (projectPath) appConfig.projectPath = projectPath;
+    if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
 
-    if (welcomeMessage) appSetupConfig.welcomeMessage = welcomeMessage;
+    if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
 
     if (!customTheme) return;
     const { typography, colors, icon } = customTheme;
@@ -48,6 +53,9 @@ export default class Chatbot {
 
   init() {
     const widget = document.createElement("onbotgo-chatwidget");
+    const styles = document.createElement("style");
+    styles.innerHTML = toastifyStyles;
+    widget.prepend(styles);
     document.body.appendChild(widget);
   }
 }

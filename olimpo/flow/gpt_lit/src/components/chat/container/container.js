@@ -4,12 +4,16 @@ import { parseStringToHtml } from "../../../utils/functions/parseStringToHtml";
 import sendIcon from "./../../../assets/icons/send.svg?raw";
 import micIcon from "./../../../assets/icons/microphone.svg?raw";
 import logo from "./../../../assets/icons/logo.svg?raw";
-import { handleUploadFile } from "./use-cases/uploadFile";
-import { appSetupConfig } from "../../../app-config/setup";
-import { sendMessage } from "./use-cases/sendMessage";
+import { appConfig } from "../../../app-config/setup";
+import { getPrediction, sendMessageApi } from "../../../api/sendMessage";
+import { redirectConversation } from "../../../services/websockets/redirect";
+import robotImage from "../../../assets/images/robot.png";
+import Toastify from "toastify-js";
+import { theme } from "../../../app-config/theme";
 
 const tag = `onbotgo-chat`;
 
+const redirectWebSocket = new redirectConversation();
 export class ChatContainer extends LitElement {
   static styles = css`
     ${unsafeCSS(styles)}
@@ -29,9 +33,9 @@ export class ChatContainer extends LitElement {
     super();
     this.isMicShowing = false;
     this.attachedFiles = [];
-    this.isDisabled = false;
+    this.isSendingMessage = false;
     this.messagesHistory = [
-      { content: appSetupConfig.welcomeMessage, type: "apiMessage" },
+      { content: appConfig.welcomeMessage, type: "apiMessage" },
     ];
   }
 
@@ -55,6 +59,16 @@ export class ChatContainer extends LitElement {
     const history = structuredClone(this.messagesHistory);
     history.splice(0, 1);
 
+    const payload = {
+      channel_id: appConfig.chathubChannelId,
+      message:
+        this.attachedFiles.length && !message && !this.attachedRecord
+          ? "Adjunto comprobante de pago"
+          : message,
+      url: (this.attachedFiles || []).map(({ url }) => url),
+      unique_id: appConfig.messageHistoryId,
+    };
+
     if (this.attachedFiles.length) {
       this.addMessageAndUpdateScroll(
         ...this.attachedFiles.map((af) => ({
@@ -63,6 +77,7 @@ export class ChatContainer extends LitElement {
           fileType: af.type.includes("image") ? "image" : af.type,
         }))
       );
+      this.attachedFiles = [];
     }
 
     if (this.attachedRecord)
@@ -71,53 +86,109 @@ export class ChatContainer extends LitElement {
         file: this.attachedRecord,
         fileType: "audio",
       });
-
     if (message)
       this.addMessageAndUpdateScroll({ content: message, type: "userMessage" });
 
-    this.addMessageAndUpdateScroll({ type: "loadingMessage" });
-    this.isSendingMessage = false;
-    this.attachedFiles = [];
+    this.addMessageAndUpdateScroll({ type: "loadingApiMessage" });
+
     this.attachedRecord = null;
-    this.message = "";
-
-    const apiMessages = await sendMessage({
-      message: this.message,
-      files: this.attachedFiles,
-      record: this.attachedRecord,
-      chattingWith: this.chattingWith,
-    });
-
-    this.removeLoadingMessages();
-    if (apiMessages?.data?.process?.length)
-      apiMessages.data.process.forEach((process) => {
-        this.addMessageAndUpdateScroll({
-          type: process.role,
-          name: process.name,
-          content: process.content,
-        });
+    this.isSendingMessage = true;
+    if (this.chattingWith === "human_agent") {
+      sendMessageApi({
+        content: `${payload.message}\n${payload.url}`,
+        conversation_id: appConfig.messageHistoryId,
+        channel_id: appConfig.chathubChannelId,
+        sender: "user",
+      }).finally(() => {
+        this.removeLoadingMessages();
+        this.updateScrollbar();
+        this.isSendingMessage = false;
       });
-    if (apiMessages.length)
-      apiMessages.forEach((m) => {
-        this.addMessageAndUpdateScroll({
-          content: m.content,
-          type: "apiMessage",
-        });
+      return;
+    }
+    if (payload.url.length)
+      payload.url.forEach((url) => {
+        getPrediction({
+          ...payload,
+          message: `envio comprobante de pago, esta es la url "${url}"`,
+          url: undefined,
+        })
+          .then((apiMessage) => {
+            // if (!apiMessage.success) throw new Error(apiMessage.msg);
+            if (apiMessage?.unique_id) {
+              appConfig.messageHistoryId = apiMessage.unique_id;
+              console.log(appConfig.messageHistoryId);
+              redirectWebSocket.init(appConfig.messageHistoryId);
+              redirectWebSocket.onIncomingMessage((message) =>
+                this.addMessageAndUpdateScroll(message)
+              );
+            }
+            if (apiMessage?.data?.process?.length)
+              apiMessage.data.process.forEach((process) => {
+                this.addMessageAndUpdateScroll({
+                  type: process.role,
+                  name: process.name,
+                  content: process.content,
+                });
+              });
+
+            this.addMessageAndUpdateScroll({
+              content: apiMessage.response,
+              type: "apiMessage",
+            });
+
+            if (apiMessage.thought) this.showBotThought(apiMessage.thought);
+            if (apiMessage.redirect) {
+              this.chattingWith = "human_agent";
+            }
+          })
+          .catch((err) => console.log(err))
+          .finally(() => {
+            this.removeLoadingMessages();
+            this.updateScrollbar();
+            this.isSendingMessage = false;
+          });
       });
     else
-      this.addMessageAndUpdateScroll({
-        content: apiMessages.response,
-        type: "apiMessage",
-      });
-    if (apiMessages.redirect) {
-      this.chattingWith = "human_agent";
-    }
-    if (apiMessages.thought) this.showBotThought(apiMessages.thought);
+      getPrediction(payload)
+        .then((apiMessage) => {
+          if (apiMessage?.unique_id) {
+            appConfig.messageHistoryId = apiMessage.unique_id;
+            redirectWebSocket.init(appConfig.messageHistoryId);
+            redirectWebSocket.onIncomingMessage((message) =>
+              this.addMessageAndUpdateScroll(message)
+            );
+          }
+          if (apiMessage?.data?.process?.length)
+            apiMessage.data.process.forEach((process) => {
+              this.addMessageAndUpdateScroll({
+                type: process.role,
+                name: process.name,
+                content: process.content,
+              });
+            });
+
+          this.addMessageAndUpdateScroll({
+            content: apiMessage.response,
+            type: "apiMessage",
+          });
+
+          if (apiMessage.redirect) {
+            this.chattingWith = "human_agent";
+          }
+          if (apiMessage.thought) this.showBotThought(apiMessage.thought);
+        })
+        .catch((err) => console.log(err))
+        .finally(() => {
+          this.removeLoadingMessages();
+          this.updateScrollbar();
+          this.isSendingMessage = false;
+        });
   }
 
   removeLoadingMessages() {
     this.messagesHistory = this.messagesHistory.filter(
-      ({ type }) => type !== "loadingMessage"
+      ({ type }) => type !== "loadingApiMessage"
     );
   }
 
@@ -134,6 +205,25 @@ export class ChatContainer extends LitElement {
   addMessageAndUpdateScroll(...messages) {
     this.messagesHistory = [...this.messagesHistory, ...messages];
     setTimeout(() => this.updateScrollbar(), 0);
+  }
+
+  showBotThought(thought) {
+    Toastify({
+      text: `<div style="display:flex;align-items:center;gap:10px"><img src="${robotImage}" width="30" height="30" /> ${thought}</div>`,
+      duration: 3000,
+      newWindow: true,
+      gravity: "bottom",
+      escapeMarkup: false,
+      position: "center",
+      style: {
+        background: theme.colors.primary,
+        fontFamily: theme.typography.primary,
+        cursor: "normal",
+      },
+      stopOnFocus: true,
+
+      onClick: function () {}, // Callback after click
+    }).showToast();
   }
 
   render() {

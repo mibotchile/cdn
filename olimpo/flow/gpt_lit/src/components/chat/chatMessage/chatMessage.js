@@ -43,7 +43,6 @@ export class ChatMessage extends LitElement {
     }
     .from-chatbot {
       display: grid;
-      width: 100%;
       overflow: hidden;
       position: relative;
       color: black;
@@ -95,7 +94,9 @@ export class ChatMessage extends LitElement {
     .flex {
       display: flex;
     }
-
+    .flex-column {
+      flex-direction: column;
+    }
     .delay2 {
       animation-delay: 0.3s;
     }
@@ -129,6 +130,13 @@ export class ChatMessage extends LitElement {
         "loading-api-message";
     }
   }
+  removeSpinnerAndResize() {
+    const spinner = this.renderRoot.querySelector("onbotgo-spinner");
+    spinner.remove();
+    const file = this.renderRoot.querySelector("#file");
+    file.style.width = "255px";
+    file.style.height = "auto";
+  }
 
   get audioTemplate() {
     if (this.message.type === "userMessage") return html``;
@@ -138,7 +146,13 @@ export class ChatMessage extends LitElement {
     if (this.message.type === "userMessage")
       return html`<onbotgo-box class="justify-end align-center">
         <onbotgo-box class="from-user onbotgo-message">
-          <img src="${this.message.file.url}" width="255" />
+          <img
+            src="${this.message.file.url}"
+            @load=${this.removeSpinnerAndResize}
+            width="0"
+            id="file"
+          />
+          <onbotgo-spinner color="white"></onbotgo-spinner>
         </onbotgo-box>
         ${this.userAvatar}
       </onbotgo-box>`;
@@ -178,7 +192,7 @@ export class ChatMessage extends LitElement {
       </onbotgo-box>`;
     else if (this.message.type === "apiMessage")
       return html` <onbotgo-box class="onbotgo-message-layout">
-        ${this.botAvatar}${parseStringToHtml(
+        ${this.ApiAvatar}${parseStringToHtml(
           '<onbotgo-box class="from-chatbot onbotgo-message">' +
             this.message.content +
             '<onbotgo-box class="bg-semi-transp"></onbotgo-box></onbotgo-box>'
@@ -186,12 +200,19 @@ export class ChatMessage extends LitElement {
       >`;
   }
   get loadingMessageTemplate() {
-    return html`<onbotgo-box class="loading-api-message onbotgo-message">
-      <onbotgo-box class="dot "></onbotgo-box>
-      <onbotgo-box class="dot delay2"></onbotgo-box>
-      <onbotgo-box class="dot delay3"></onbotgo-box>
-      <onbotgo-box class="bg-semi-transp"></onbotgo-box>
-    </onbotgo-box>`;
+    if (this.message.type === "loadingUserMessage")
+      return html`<onbotgo-box class="justify-end align-center">
+        <onbotgo-box class="from-user onbotgo-message"
+          ><onbotgo-spinner color="white"></onbotgo-spinner></onbotgo-box
+        >${this.userAvatar}
+      </onbotgo-box>`;
+    else if (this.message.type === "loadingApiMessage")
+      return html`<onbotgo-box class="loading-api-message onbotgo-message">
+        <onbotgo-box class="dot "></onbotgo-box>
+        <onbotgo-box class="dot delay2"></onbotgo-box>
+        <onbotgo-box class="dot delay3"></onbotgo-box>
+        <onbotgo-box class="bg-semi-transp"></onbotgo-box>
+      </onbotgo-box>`;
   }
 
   get botAvatar() {
@@ -210,9 +231,12 @@ export class ChatMessage extends LitElement {
       ><img src="${userAvatar}" width="28" height="28"
     /></onbotgo-box>`;
   }
+
+  get ApiAvatar() {
+    return this.message.role === "agent" ? this.agentAvatar : this.botAvatar;
+  }
   render() {
-    console.log(this.message.fileType);
-    if (this.message.type === "loadingMessage")
+    if (["loadingUserMessage", "loadingApiMessage"].includes(this.message.type))
       return this.loadingMessageTemplate;
     else if (this.message.fileType === "audio") return this.audioTemplate;
     else if (this.message.fileType?.includes("image"))

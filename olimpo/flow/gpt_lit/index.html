@@ -20,11 +20,10 @@
     document.fonts.add(tarjeta_oh_font);
     const chatbot = new Chatbot({
       //PARÁMETRPS REQUERIDOS
-      chatflow: "",
-      chathubChannelId: "",
+      chatflow: import.meta.env.VITE_chatflow,
+      chathubChannelId: import.meta.env.VITE_chathubChannelId,
 
       //PARÁMETROS OPCIONALES
-      socketUid: "",
       welcomeMessage: `Hola! Bienvenid@ al WhatsApp de Solución de Pagos de Tarjeta Oh! 😀
                       Estoy para ayudarte en:
 

@@ -1,4 +1,4 @@
-import { appSetupConfig } from "../../app-config/setup";
+import { appConfig } from "../../app-config/setup";
 
 export class redirectConversation {
   socket;
@@ -8,23 +8,21 @@ export class redirectConversation {
       console.log("WS MESSAGES IS CONNECTED ", this.socket);
       return;
     }
-    const url = `wss://endpoint-prod-chatgpt.mibot.cl:8080${appSetupConfig.projectPath}messages/${conversationId}/ws`;
+    const url = `wss://endpoint-prod-chatgpt.mibot.cl:8080${appConfig.projectPath}messages/${conversationId}/ws`;
     this.socket = new WebSocket(url);
     console.log(this.socket);
 
-    this.messagesWebsocket.onopen = (event) => {
+    this.socket.onopen = (event) => {
       console.log("SOCKET CONNECTED ", event);
 
-      this.messagesWebsocket.send(
-        JSON.stringify({ event: "connected", data: null })
-      );
+      this.socket.send(JSON.stringify({ event: "connected", data: null }));
     };
 
-    this.messagesWebsocket.onerror = (event) => {
+    this.socket.onerror = (event) => {
       console.log("SOCKET ERRROR ", event);
     };
 
-    this.messagesWebsocket.onclose = (event) => {
+    this.socket.onclose = (event) => {
       console.log("SOCKET Disconnected", event);
     };
   }
@@ -33,7 +31,12 @@ export class redirectConversation {
       const data = JSON.parse(event.data);
       if (data.event !== "incoming_message") return;
       const message = data.data;
-      callback(message);
+      console.log(message);
+      callback({
+        content: message.content,
+        role: message.role,
+        type: "apiMessage",
+      });
     };
   }
   sendMessage() {}

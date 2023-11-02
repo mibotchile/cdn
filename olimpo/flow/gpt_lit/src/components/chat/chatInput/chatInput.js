@@ -61,6 +61,8 @@ export class ChatInput extends LitElement {
   }
 
   render() {
+    if (!this.isDisabled)
+      setTimeout(() => this.renderRoot.querySelector("input").focus(), 0);
     return html`<input
         type="text"
         placeholder="Escribe un mensaje"
