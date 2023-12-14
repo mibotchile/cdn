@@ -1,22 +1,22 @@
 import WidgetContainer, {
-  getWidgetContainerInlineStyle,
+	getWidgetContainerInlineStyle,
 } from "./components/widgetContainer";
 
 import {
-  BubbleIconToggler,
-  getBubbleIconTogglerStyles,
+	BubbleIconToggler,
+	getBubbleIconTogglerStyles,
 } from "./components/bubble/bubbleIconToggler";
 import {
-  ChatContainer,
-  getChatContainerStyles,
+	ChatContainer,
+	getChatContainerStyles,
 } from "./components/chat/container";
 import {
-  chatMessage,
-  getChatMessageStyles,
+	chatMessage,
+	getChatMessageStyles,
 } from "./components/chat/chatMessage/chatMessage";
 import {
-  ChatInput,
-  getChatInputStyles,
+	ChatInput,
+	getChatInputStyles,
 } from "./components/chat/chatInput/chatInput";
 import { Box } from "./components/box/box";
 
@@ -32,68 +32,73 @@ import { MicRecord } from "./components/chat/record/record";
 import toastifyStyles from "toastify-js/src/toastify.css?inline";
 
 export default class Chatbot {
-  constructor({
-    chatflow,
-    chathubChannelId,
-    projectPath,
-    theme: customTheme,
-    welcomeMessage,
-  }) {
-    appConfig.chatflowID = chatflow;
-    if (projectPath) appConfig.projectPath = projectPath;
-    appConfig.chathubChannelId = chathubChannelId;
-    if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
+	constructor({
+		chatflow,
+		chathubChannelId,
+		projectPath,
+		botHost,
+		ssl,
+		theme: customTheme,
+		welcomeMessage,
+	}) {
+		appConfig.chatflowID = chatflow;
+		if (projectPath) appConfig.projectPath = projectPath;
+		if (botHost) appConfig.botHost = botHost;
+		if (ssl) appConfig.ssl = ssl;
+		if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
+    
+		appConfig.chathubChannelId = chathubChannelId;
+    
+		if (!customTheme) return;
+		const { typography, colors, icon } = customTheme;
 
-    if (!customTheme) return;
-    const { typography, colors, icon } = customTheme;
+		if (typography)
+			Object.keys(typography).forEach(
+				(typo) => (theme.typography[typo] = typography[typo])
+			);
 
-    if (typography)
-      Object.keys(typography).forEach(
-        (typo) => (theme.typography[typo] = typography[typo])
-      );
+		if (colors)
+			Object.keys(colors).forEach(
+				(color) => (theme.colors[color] = colors[color])
+			);
 
-    if (colors)
-      Object.keys(colors).forEach(
-        (color) => (theme.colors[color] = colors[color])
-      );
+		if (icon) theme.customIcon = icon;
+	}
 
-    if (icon) theme.customIcon = icon;
-  }
+	init() {
+		this.registerComponents(
+			WidgetContainer,
+			BubbleIconToggler,
+			ChatContainer,
+			chatMessage,
+			ChatInput,
+			Box,
+			CustomScrollBar,
+			IconButton,
+			Dropdown,
+			FabButton,
+			MicRecord
+		);
 
-  init() {
-    this.registerComponents(
-      WidgetContainer,
-      BubbleIconToggler,
-      ChatContainer,
-      chatMessage,
-      ChatInput,
-      Box,
-      CustomScrollBar,
-      IconButton,
-      Dropdown,
-      FabButton,
-      MicRecord
-    );
+		const widgetContainer = new WidgetContainer();
 
-    const widgetContainer = new WidgetContainer();
+		addInlineStylesToElement({
+			element: widgetContainer,
+			styles: [
+				getBubbleIconTogglerStyles(theme),
+				getChatMessageStyles(theme),
+				getChatInputStyles(theme),
+				getChatContainerStyles(theme),
+				getWidgetContainerInlineStyle(),
+			],
+		});
+		const styles = document.createElement("style");
+		styles.innerHTML = toastifyStyles;
+		widgetContainer.prepend(styles);
+		document.body.appendChild(widgetContainer);
+	}
 
-    addInlineStylesToElement({
-      element: widgetContainer,
-      styles: [
-        getBubbleIconTogglerStyles(theme),
-        getChatMessageStyles(theme),
-        getChatInputStyles(theme),
-        getChatContainerStyles(theme),
-        getWidgetContainerInlineStyle(),
-      ],
-    });
-    const styles = document.createElement("style");
-    styles.innerHTML = toastifyStyles;
-    widgetContainer.prepend(styles);
-    document.body.appendChild(widgetContainer);
-  }
-
-  registerComponents(...classComponents) {
-    classComponents.forEach((comp) => customElements.define(comp.tag, comp));
-  }
+	registerComponents(...classComponents) {
+		classComponents.forEach((comp) => customElements.define(comp.tag, comp));
+	}
 }
