@@ -210,7 +210,7 @@ export class ChatContainer extends LitElement {
   showBotThought(thought) {
     Toastify({
       text: `<div style="display:flex;align-items:center;gap:10px"><img src="${robotImage}" width="30" height="30" /> ${thought}</div>`,
-      duration: 3000,
+      duration: 5000,
       newWindow: true,
       gravity: "bottom",
       escapeMarkup: false,
@@ -221,8 +221,6 @@ export class ChatContainer extends LitElement {
         cursor: "normal",
       },
       stopOnFocus: true,
-
-      onClick: function () {}, // Callback after click
     }).showToast();
   }
 
