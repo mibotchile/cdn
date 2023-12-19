@@ -203,6 +203,7 @@ export class ChatContainer extends WebComponent {
 				this.messagesContainer
 					.querySelectorAll(".loading-api-message")
 					?.forEach((node) => node.remove());
+					inputElement.disabled = false;
 			});
 			return;
 		}
