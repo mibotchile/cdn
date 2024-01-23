@@ -22,6 +22,7 @@ export class BtnWhatsapp extends WebComponent {
 BtnWhatsapp.tag = tag;
 export const getBubbleWhatsappIconTogglerStyles = (whatsappButtonConfig) => ({
   [tag]: {
+    "box-sizing": "border-box",
     position: "absolute",
     "background-color": "#25D366",
     "border-radius": "300px",
