@@ -94,7 +94,6 @@ export default class Chatbot {
     );
 
     const widgetContainer = new WidgetContainer();
-    const btnWhatsapp = new BtnWhatsapp();
 
     addInlineStylesToElement({
       element: widgetContainer,
@@ -111,7 +110,10 @@ export default class Chatbot {
     styles.innerHTML = toastifyStyles;
     widgetContainer.prepend(styles);
     document.body.appendChild(widgetContainer);
-    document.body.appendChild(btnWhatsapp);
+    if (whatsappButtonConfig.active) {
+      const btnWhatsapp = new BtnWhatsapp();
+      document.body.appendChild(btnWhatsapp);
+    }
   }
 
   registerComponents(...classComponents) {
