@@ -148,7 +148,7 @@ export class ChatContainer extends WebComponent {
 				this.attachedFiles.length && !message && !this.attachedRecord
 					? "Adjunto comprobante de pago"
 					: message,
-			url: (this.attachedFiles || []).map(({ url }) => url),
+			urls: (this.attachedFiles || []).map(({ url }) => url),
 			unique_id: appConfig.messageHistoryId,
 		};
 
@@ -194,7 +194,7 @@ export class ChatContainer extends WebComponent {
 			"rgba(239,239,239,.6)";
 		if (this.chattingWith === "human_agent") {
 			sendMessage({
-				content: `${payload.message}\n${payload.url}`,
+				content: `${payload.message}\n${payload.urls}`,
 				conversation_id: appConfig.messageHistoryId,
 				channel_id: appConfig.chathubChannelId,
 				sender: "user",
@@ -203,93 +203,93 @@ export class ChatContainer extends WebComponent {
 				this.messagesContainer
 					.querySelectorAll(".loading-api-message")
 					?.forEach((node) => node.remove());
-					inputElement.disabled = false;
+				inputElement.disabled = false;
 			});
 			return;
 		}
-		if (payload.url.length)
-			payload.url.forEach((url) => {
-				getPrediction({
-					...payload,
-					message: `envio comprobante de pago, esta es la url "${url}"`,
-					url: undefined,
-				})
-					.then((apiMessage) => {
-						// if (!apiMessage.success) throw new Error(apiMessage.msg);
-						if (apiMessage?.unique_id) {
-							appConfig.messageHistoryId = apiMessage.unique_id;
-							this.initMessagesWebsocket(appConfig.messageHistoryId);
-						}
-						if (apiMessage?.data?.process?.length)
-							apiMessage.data.process.forEach((process) => {
-								this.addMessages([
-									{
-										type: process.role,
-										name: process.name,
-										content: process.content,
-									},
-								]);
-							});
+		// if (payload.urlslength)
+		// 	payload.urls.forEach((url) => {
+		// 		getPrediction({
+		// 			...payload,
+		// 			message: `envio comprobante de pago, esta es la url "${url}"`,
+		// 			url,
+		// 		})
+		// 			.then((apiMessage) => {
+		// 				// if (!apiMessage.success) throw new Error(apiMessage.msg);
+		// 				if (apiMessage?.unique_id) {
+		// 					appConfig.messageHistoryId = apiMessage.unique_id;
+		// 					this.initMessagesWebsocket(appConfig.messageHistoryId);
+		// 				}
+		// 				if (apiMessage?.data?.process?.length)
+		// 					apiMessage.data.process.forEach((process) => {
+		// 						this.addMessages([
+		// 							{
+		// 								type: process.role,
+		// 								name: process.name,
+		// 								content: process.content,
+		// 							},
+		// 						]);
+		// 					});
 
+		// 				this.addMessages([
+		// 					{ message: apiMessage.response, type: "apiMessage" },
+		// 				]);
+
+		// 				if (apiMessage.thought) this.showBotThought(apiMessage.thought);
+		// 				if (apiMessage.redirect) {
+		// 					this.chattingWith = "human_agent";
+		// 				}
+		// 			})
+		// 			.catch((err) => console.log(err))
+		// 			.finally(() => {
+		// 				this.messagesContainer
+		// 					.querySelectorAll(".loading-api-message")
+		// 					?.forEach((node) => node.remove());
+
+		// 				this.updateScrollbar();
+		// 				inputElement.disabled = false;
+		// 				this.getChild("#onbotgo-chatinput").style.backgroundColor = "white";
+		// 				inputElement.focus();
+		// 			});
+		// 	});
+		// else
+		getPrediction(payload)
+			.then((apiMessage) => {
+				// if (!apiMessage.success) throw new Error(apiMessage.msg);
+				if (apiMessage?.unique_id) {
+					appConfig.messageHistoryId = apiMessage.unique_id;
+					this.initMessagesWebsocket(appConfig.messageHistoryId);
+				}
+				if (apiMessage?.data?.process?.length)
+					apiMessage.data.process.forEach((process) => {
 						this.addMessages([
-							{ message: apiMessage.response, type: "apiMessage" },
+							{
+								type: process.role,
+								name: process.name,
+								content: process.content,
+							},
 						]);
-
-						if (apiMessage.thought) this.showBotThought(apiMessage.thought);
-						if (apiMessage.redirect) {
-							this.chattingWith = "human_agent";
-						}
-					})
-					.catch((err) => console.log(err))
-					.finally(() => {
-						this.messagesContainer
-							.querySelectorAll(".loading-api-message")
-							?.forEach((node) => node.remove());
-
-						this.updateScrollbar();
-						inputElement.disabled = false;
-						this.getChild("#onbotgo-chatinput").style.backgroundColor = "white";
-						inputElement.focus();
 					});
+
+				this.addMessages([
+					{ message: apiMessage.response, type: "apiMessage" },
+				]);
+
+				if (apiMessage.redirect) {
+					this.chattingWith = "human_agent";
+				}
+				if (apiMessage.thought) this.showBotThought(apiMessage.thought);
+			})
+			.catch((err) => console.log(err))
+			.finally(() => {
+				this.messagesContainer
+					.querySelectorAll(".loading-api-message")
+					?.forEach((node) => node.remove());
+				inputElement.disabled = false;
+				this.getChild("#onbotgo-chatinput").style.backgroundColor = "white";
+				inputElement.focus();
+				this.updateScrollbar();
 			});
-		else
-			getPrediction(payload)
-				.then((apiMessage) => {
-					// if (!apiMessage.success) throw new Error(apiMessage.msg);
-					if (apiMessage?.unique_id) {
-						appConfig.messageHistoryId = apiMessage.unique_id;
-						this.initMessagesWebsocket(appConfig.messageHistoryId);
-					}
-					if (apiMessage?.data?.process?.length)
-						apiMessage.data.process.forEach((process) => {
-							this.addMessages([
-								{
-									type: process.role,
-									name: process.name,
-									content: process.content,
-								},
-							]);
-						});
-
-					this.addMessages([
-						{ message: apiMessage.response, type: "apiMessage" },
-					]);
-
-					if (apiMessage.redirect) {
-						this.chattingWith = "human_agent";
-					}
-					if (apiMessage.thought) this.showBotThought(apiMessage.thought);
-				})
-				.catch((err) => console.log(err))
-				.finally(() => {
-					this.messagesContainer
-						.querySelectorAll(".loading-api-message")
-						?.forEach((node) => node.remove());
-					inputElement.disabled = false;
-					this.getChild("#onbotgo-chatinput").style.backgroundColor = "white";
-					inputElement.focus();
-					this.updateScrollbar();
-				});
 	}
 
 	toggle() {
