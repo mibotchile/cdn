@@ -44,11 +44,11 @@ export default class Chatbot {
 		appConfig.chatflowID = chatflow;
 		if (projectPath) appConfig.projectPath = projectPath;
 		if (botHost) appConfig.botHost = botHost;
-		if (ssl) appConfig.ssl = ssl;
+		if (ssl !== undefined || ssl !== null) appConfig.ssl = ssl;
 		if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
-    
+
 		appConfig.chathubChannelId = chathubChannelId;
-    
+
 		if (!customTheme) return;
 		const { typography, colors, icon } = customTheme;
 
