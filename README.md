@@ -1,25 +1,32 @@
-
 # OLIMPO FLOW CDN
 
 el proyecto esta divido en 3 carpetas:
- - GPT: Es el primer proyecto creado, esta hecho con vite y vanilla javascript.
- - GPT_lit: Migración del primer proyecto a Lit.
- - GPT_test: Copia del primer proyecto con features nuevas de tarjeta oh.
+
+- GPT: Es el primer proyecto creado, esta hecho con vite y vanilla javascript.
+- GPT_lit: Migración del primer proyecto a Lit.
+- GPT_test: Copia del primer proyecto con features nuevas de tarjeta oh.
 
 ## Publicación de una nueva versión
-1. Hacer build del proyecto:
+
+1. Ir al directorio del proyecto:
+
+```bash
+  cd olimpo/flow/gpt_test
+```
+
+2. Hacer build del proyecto:
+
 ```
 pnpm build
 ```
-2. Subir cambios del proyecto:
+
+3. Subir cambios del proyecto:
+
 ```
 git push
 ```
-3. Crear una nueva release en github.
 
-
-
-
+4. Crear una nueva release en github.
 
 ## Levantar localmente
 
@@ -46,4 +53,3 @@ Levantar el server
 ```bash
   pnpm dev
 ```
-
