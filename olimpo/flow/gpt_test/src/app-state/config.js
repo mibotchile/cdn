@@ -8,6 +8,7 @@ export class AppConfig {
   welcomeMessage = "¡Hola! ¿En qué puedo ayudarte hoy?";
   chathubChannelId = "";
   projectPath = "/";
+  showThoughts = true;
 }
 
 export const appConfig = new AppConfig();

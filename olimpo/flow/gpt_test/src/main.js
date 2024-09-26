@@ -46,13 +46,15 @@ export default class Chatbot {
     theme: customTheme,
     welcomeMessage,
     whatsappButton,
+    showThoughts,
   }) {
     appConfig.chatflowID = chatflow;
     if (projectPath) appConfig.projectPath = projectPath;
     if (botHost) appConfig.botHost = botHost;
     if (ssl) appConfig.ssl = ssl;
     if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
-
+    if ([false, true].includes(showThoughts))
+      appConfig.showThoughts = showThoughts;
     appConfig.chathubChannelId = chathubChannelId;
 
     if (!customTheme) return;
@@ -69,7 +71,7 @@ export default class Chatbot {
       );
 
     if (icon) theme.customIcon = icon;
-    if (whatsappButton.active) {
+    if (whatsappButton?.active) {
       whatsappButtonConfig.active = true;
       whatsappButtonConfig.number = whatsappButton.number;
       whatsappButtonConfig.position = whatsappButton.position.toLowerCase();

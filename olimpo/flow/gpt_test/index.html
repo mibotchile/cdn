@@ -120,10 +120,8 @@
     <div id="app"></div>
 
     <script type="module">
-      // import Chatbot from "https://cdn.jsdelivr.net/gh/mibotchile/cdn@v0.6.14/olimpo/flow/gpt_test/dist/onbotgo_gpt.min.js";
-      import Chatbot from "./src/main";
-      // import Chatbot from "./dist/onbotgo_gpt.min";
-
+      // import Chatbot from "https://cdn.jsdelivr.net/gh/mibotchile/cdn@v0.6.20/olimpo/flow/gpt_test/dist/onbotgo_gpt.min.js";
+      import Chatbot from "./src/main.js";
       const tarjeta_oh_font = new FontFace(
         "tarjeta_oh",
         "url(https://cdn.jsdelivr.net/gh/mibotchile/cdn@v0.6.7/olimpo/flow/gpt_test/src/assets/fonts/tarjeta_oh.otf)",
@@ -133,35 +131,26 @@
       document.fonts.add(tarjeta_oh_font);
       const chatbot = new Chatbot({
         //PARÁMETRPS REQUERIDOS
-        chatflow: import.meta.env.VITE_chatflow,
-        chathubChannelId: import.meta.env.VITE_chathubChannelId,
-        projectPath: "/",
+        chatflow: "53f9cadf-9685-44f2-92b4-19be11248274",
+        chathubChannelId: "51943554023",
+        projectPath: "/movistar/",
         //PARÁMETROS OPCIONALES
-        whatsappButton: {
-          active: true,
-          number: "",
-          position: "br",
-          msg: "Hola quiero comunicarme para info",
-        },
+        showThoughts: true,
         socketUid: "",
-        welcomeMessage: `Hola! Bienvenid@ al WhatsApp de Solución de Pagos de Movistar! 😀
-                        Estoy para ayudarte en:
-
-                        <ul>
-                        <li>Saber si tienes facilidades de pago.</li>
-                        <li>Detalle de tu deuda vencida.</li>
-                        <li>Solicitar carta de no adeudo.</li>
-                        <li>Validar que estés al día en tus pagos.</li>
-                        <li>Envío de comprobante de pago.</li>
-                        </ul>
-                        Comentanos, ¿qué necesitas?`,
+        welcomeMessage: `¡Hola! Bienvenid@ al chat de Movistar!
+        Estoy para ayudarte en:
+  
+        - Conocer detalle de tu deuda vencida
+        - Formas y lugares de pago
+        - Solicitar recibo
+        Comentanos, ¿qué necesitas?`,
         theme: {
           icon: `
-            <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-          `, // Valor por defecto
-          typography: { primary: "'tarjeta_oh'" }, // Valor por defecto
+              <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            `, // Valor por defecto
+          typography: { primary: "sans-serif" }, // Valor por defecto
           colors: {
-            primary: "rgb(102, 206, 0)", // Valor por defecto
+            primary: "#016F62", // Valor por defecto
           },
         },
       });
