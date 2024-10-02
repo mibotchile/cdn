@@ -9,5 +9,8 @@ export default defineConfig({
       formats: ["es"],
       fileName: "onbotgo_gpt.min",
     },
+    commonjsOptions: {
+      transformMixedEsModules: true,
+    },
   },
 });
