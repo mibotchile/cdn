@@ -119,6 +119,9 @@ export default class Chatbot {
   }
 
   registerComponents(...classComponents) {
-    classComponents.forEach((comp) => customElements.define(comp.tag, comp));
+    classComponents.forEach((comp) => {
+      if (customElements.get(comp)) return;
+      customElements.define(comp.tag, comp);
+    });
   }
 }
