@@ -120,8 +120,12 @@ export default class Chatbot {
 
   registerComponents(...classComponents) {
     classComponents.forEach((comp) => {
-      if (customElements.get(comp.tag)) return;
-      customElements.define(comp.tag, comp);
+      try {
+        if (customElements.get(comp.tag)) return;
+        customElements.define(comp.tag, comp);
+      } catch (err) {
+        console.log(`error:$ ${err.message}`);
+      }
     });
   }
 }
