@@ -6,11 +6,7 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, "src/main.js"),
       name: "onbotgo_gpt",
-      formats: ["es"],
       fileName: "onbotgo_gpt.min",
-    },
-    commonjsOptions: {
-      transformMixedEsModules: true,
     },
   },
 });
