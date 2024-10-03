@@ -215,7 +215,6 @@ export class ChatContainer extends WebComponent {
           url: undefined,
         })
           .then((apiMessage) => {
-            // if (!apiMessage.success) throw new Error(apiMessage.msg);
             if (apiMessage?.unique_id) {
               appConfig.messageHistoryId = apiMessage.unique_id;
               this.initMessagesWebsocket(appConfig.messageHistoryId);
@@ -239,6 +238,8 @@ export class ChatContainer extends WebComponent {
             if (apiMessage.redirect) {
               this.chattingWith = "human_agent";
             }
+
+            if (apiMessage?.cards) handleAddressMessages(apiMessage.cards);
           })
           .catch((err) => console.log(err))
           .finally(() => {
@@ -255,7 +256,6 @@ export class ChatContainer extends WebComponent {
     else
       getPrediction(payload)
         .then((apiMessage) => {
-          // if (!apiMessage.success) throw new Error(apiMessage.msg);
           if (apiMessage?.unique_id) {
             appConfig.messageHistoryId = apiMessage.unique_id;
             this.initMessagesWebsocket(appConfig.messageHistoryId);
@@ -290,6 +290,26 @@ export class ChatContainer extends WebComponent {
           inputElement.focus();
           this.updateScrollbar();
         });
+  }
+
+  handleAddressMessages(cards) {
+    cards.forEach(() => {
+      if (
+        apiMessage.cards.type === "address" &&
+        apiMessage.cards.render_map === "background" &&
+        typeof appConfig.callbacks.address === "function"
+      )
+        appConfig.callbacks.address({
+          ...apiMessage.cards,
+          render_map: undefined,
+          type: undefined,
+        });
+      if (
+        apiMessage.cards.type === "address" &&
+        apiMessage.cards.render_map !== "background"
+      )
+        this.addMessages([{ ...apiMessage?.cards, type: "mapApiMessage" }]);
+    });
   }
 
   toggle() {

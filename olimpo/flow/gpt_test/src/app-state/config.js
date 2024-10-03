@@ -9,6 +9,7 @@ export class AppConfig {
   chathubChannelId = "";
   projectPath = "/";
   showThoughts = true;
+  callbacks = {};
 }
 
 export const appConfig = new AppConfig();

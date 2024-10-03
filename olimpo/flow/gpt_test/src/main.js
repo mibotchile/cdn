@@ -47,12 +47,14 @@ export default class Chatbot {
     welcomeMessage,
     whatsappButton,
     showThoughts,
+    callbacks,
   }) {
     appConfig.chatflowID = chatflow;
     if (projectPath) appConfig.projectPath = projectPath;
     if (botHost) appConfig.botHost = botHost;
     if (ssl) appConfig.ssl = ssl;
     if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
+    if (callbacks) appConfig.callbacks = callbacks;
     if ([false, true].includes(showThoughts))
       appConfig.showThoughts = showThoughts;
     appConfig.chathubChannelId = chathubChannelId;

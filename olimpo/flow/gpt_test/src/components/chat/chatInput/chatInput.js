@@ -26,6 +26,7 @@ export class ChatInput extends WebComponent {
 
     this.input.style.fontFamily = theme.typography.primary;
     this.input.style.backgroundColor = "white";
+    this.input.style.color = "black";
     this.setStyles(this.defaultStyles);
   }
 
