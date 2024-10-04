@@ -24,11 +24,11 @@ export class RaisedButton extends WebComponent {
     this.classList.add("addressActionButton");
     const backgroundButton = new Box();
     backgroundButton.classList.add("bg-semi-transp");
-    this.innerText = appConfig.callbacks.addressButton.text;
+    this.innerText = appConfig.callbacks?.addressButton?.text;
     this.appendChild(backgroundButton);
     if (appConfig.callbacks?.addressButton?.action)
       this.onclick = (e) =>
-        appConfig.callbacks.addressButton.action(messageData, e);
+        appConfig.callbacks?.addressButton?.action(messageData, e);
   }
 }
 
