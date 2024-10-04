@@ -51,6 +51,7 @@ export default class Chatbot {
     whatsappButton,
     showThoughts,
     callbacks,
+    googleApikey,
   }) {
     appConfig.chatflowID = chatflow;
     if (projectPath) appConfig.projectPath = projectPath;
@@ -58,6 +59,7 @@ export default class Chatbot {
     if (ssl) appConfig.ssl = ssl;
     if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
     if (callbacks) appConfig.callbacks = callbacks;
+    if (googleApikey) appConfig.googleApikey = googleApikey;
     if ([false, true].includes(showThoughts))
       appConfig.showThoughts = showThoughts;
     appConfig.chathubChannelId = chathubChannelId;

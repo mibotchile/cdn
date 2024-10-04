@@ -10,6 +10,7 @@ export class AppConfig {
   projectPath = "/";
   showThoughts = true;
   callbacks = {};
+  googleApikey = "";
 }
 
 export const appConfig = new AppConfig();

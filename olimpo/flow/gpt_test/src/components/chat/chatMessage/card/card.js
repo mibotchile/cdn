@@ -1,6 +1,7 @@
 import { WebComponent } from "../../../webComponent";
 import leaflet from "leaflet";
 import { GoogleProvider } from "leaflet-geosearch";
+import { appConfig } from "../../../../app-state/config";
 export class Card extends WebComponent {
   map;
   constructor({ type, id, name, address, image_url, country, location, data }) {
@@ -29,7 +30,7 @@ export class Card extends WebComponent {
       );
       if (someDiv) {
         const provider = new GoogleProvider({
-          apiKey: import.meta.env.VITE_GOOGLE_MAPS_APIKEY,
+          apiKey: appConfig.googleApikey,
         });
         provider.search({ query: address }).then(([searchResults]) => {
           console.log(searchResults);
