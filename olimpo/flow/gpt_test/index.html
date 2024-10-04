@@ -138,6 +138,15 @@
         //PARÁMETROS OPCIONALES
         showThoughts: false,
         socketUid: "",
+        callbacks: {
+          address: () => alert("address"),
+          addressButton: {
+            text: "Ver mapa",
+            action: (e) => {
+              alert(`hola mundo ${e.location.lat}`);
+            },
+          },
+        },
         welcomeMessage: `¡Hola! Bienvenid@ al chat de Movistar!
         Estoy para ayudarte en:
 

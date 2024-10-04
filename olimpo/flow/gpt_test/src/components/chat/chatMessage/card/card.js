@@ -2,6 +2,9 @@ import { WebComponent } from "../../../webComponent";
 import leaflet from "leaflet";
 import { GoogleProvider } from "leaflet-geosearch";
 import { appConfig } from "../../../../app-state/config";
+import { Box } from "../../../box/box";
+import { theme } from "../../../../app-state/theme";
+import { RaisedButton } from "../../../buttons/filled/raisedButton";
 export class Card extends WebComponent {
   map;
   constructor({ type, id, name, address, image_url, country, location, data }) {
@@ -11,6 +14,7 @@ export class Card extends WebComponent {
       transition: "0.3s",
       width: "72%",
       height: "30dvh",
+      position: "relative",
     });
     const mapContainerId = Math.floor(Math.random() * 10000);
     const mapContainer = document.createElement("div");
@@ -20,7 +24,7 @@ export class Card extends WebComponent {
 
     mapContainer.id = `onbotgo-mapContainer-${mapContainerId}`;
     this.appendChild(mapContainer);
-
+    const that = this;
     const observer = new MutationObserver(function (
       mutations,
       mutationInstance
@@ -33,8 +37,7 @@ export class Card extends WebComponent {
           apiKey: appConfig.googleApikey,
         });
         provider.search({ query: address }).then(([searchResults]) => {
-          console.log(searchResults);
-          this.map = leaflet
+          that.map = leaflet
             .map(mapContainer)
             .setView(
               [
@@ -49,13 +52,33 @@ export class Card extends WebComponent {
               attribution:
                 '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
             })
-            .addTo(this.map);
+            .addTo(that.map);
           leaflet
             .marker([
               searchResults?.y || -12.046064944817124,
               searchResults?.x || -77.04547005862791,
             ])
-            .addTo(this.map);
+            .addTo(that.map);
+          if (
+            ["function"].includes(
+              typeof appConfig.callbacks?.addressButton?.action
+            ) ||
+            appConfig.callbacks?.addressButton?.action instanceof Promise
+          )
+            that.appendChild(
+              new RaisedButton({
+                id,
+                name,
+                address,
+                image_url,
+                country,
+                location: location || {
+                  lat: searchResults?.y || -12.046064944817124,
+                  lng: searchResults?.x || -77.04547005862791,
+                },
+                data,
+              })
+            );
         });
         mutationInstance.disconnect();
       }

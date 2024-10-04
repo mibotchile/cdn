@@ -9,6 +9,7 @@ import agentImage from "./../../../assets/images/agent.png";
 import userImage from "./../../../assets/images/user.png";
 import { theme } from "../../../app-state/theme";
 import { Card } from "./card/card";
+import { RaisedButton } from "../../buttons/filled/raisedButton";
 
 const tag = "onbotgo-chatmessage";
 export class chatMessage extends WebComponent {
@@ -32,6 +33,7 @@ export class chatMessage extends WebComponent {
       file: message.file,
       message: message.message,
       iconPlayPause: iconPlay,
+      render_map: message.render_map,
       isPlaying: false,
     })
       .replaceAll("\n", " ")
@@ -75,10 +77,34 @@ export class chatMessage extends WebComponent {
         messageContainer
       );
       messageContainer.innerHTML += message.message;
-    } else if (!message.fileType && message.type === "mapApiMessage") {
+    } else if (
+      !message.fileType &&
+      message.type === "address" &&
+      message.render_map === "modal"
+    ) {
       this.appendChild(this.getAvatarMessage("apiMessage"));
       const cardMessage = new Card(message);
       this.appendChild(cardMessage);
+    } else if (
+      !message.fileType &&
+      message.type === "address" &&
+      message.render_map === "background"
+    ) {
+      const messageContainer = this.querySelector(".onbotgo-message");
+      messageContainer.innerHTML += `<span>${message.name}
+                                        <ul>
+                                          <li>Proyecto: ${message.data.proyecto}</li>
+                                          <li>Precio: ${message.data.precio}</li>
+                                          <li>Cuartos: ${message.data.cuartos}</li>
+                                        </ul>
+                                        </span>`;
+      messageContainer.appendChild(new RaisedButton(message));
+      this.insertBefore(this.getAvatarMessage("apiMessage"), messageContainer);
+    } else if (
+      !message.fileType &&
+      message.type === "address" &&
+      message.render_map === "modal"
+    ) {
     }
     if (message.type === "LoadingMessage") this.setLoadingAnimation();
   }

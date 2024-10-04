@@ -28,6 +28,28 @@ export class ChatContainer extends WebComponent {
       type: "apiMessage",
     },
     ...(SessionStorage.messagesHistory.get() ?? []),
+    {
+      type: "address",
+      id: "1",
+      name: "proyecto brisas del mar",
+      address: "av republica china 298",
+      image_url: "",
+      country: "pe",
+      location: "",
+      data: { proyecto: "valles del campo", precio: "1000", cuartos: 3 },
+      render_map: "background",
+    },
+    {
+      type: "address",
+      id: "2",
+      name: "proyecto manzana verde",
+      address: "av puno calle 21",
+      image_url: "",
+      country: "pe",
+      location: "",
+      data: { proyecto: "valles del campo", precio: "1000", cuartos: 3 },
+      render_map: "modal",
+    },
   ];
   attachedFiles = [];
   attachedRecord;
@@ -239,7 +261,7 @@ export class ChatContainer extends WebComponent {
               this.chattingWith = "human_agent";
             }
 
-            if (apiMessage?.cards) handleCardMessages(apiMessage.cards);
+            if (apiMessage?.cards) this.handleCardMessages(apiMessage.cards);
           })
           .catch((err) => console.log(err))
           .finally(() => {
@@ -279,7 +301,7 @@ export class ChatContainer extends WebComponent {
             this.chattingWith = "human_agent";
           }
           if (apiMessage.thought) this.showBotThought(apiMessage.thought);
-          if (apiMessage?.cards) handleCardMessages(apiMessage.cards);
+          if (apiMessage?.cards) this.handleCardMessages(apiMessage.cards);
         })
         .catch((err) => console.log(err))
         .finally(() => {
@@ -294,21 +316,10 @@ export class ChatContainer extends WebComponent {
   }
 
   handleCardMessages(cards) {
-    cards.forEach(() => {
-      if (
-        apiMessage.cards.type === "address" &&
-        apiMessage.cards.render_map === "background" &&
-        typeof appConfig.callbacks.address === "function"
-      )
-        appConfig.callbacks.address({
-          ...apiMessage.cards,
-          render_map: undefined,
-        });
-      if (
-        apiMessage.cards.type === "address" &&
-        apiMessage.cards.render_map === "modal"
-      )
-        this.addMessages([{ ...apiMessage?.cards, type: "mapApiMessage" }]);
+    cards.forEach((card) => {
+      this.addMessages([card]);
+      if (appConfig.callbacks?.address && card.type === "address")
+        appConfig.callbacks?.address(messageData);
     });
   }
 
@@ -325,7 +336,6 @@ export class ChatContainer extends WebComponent {
   }
 
   showBotThought(thought) {
-    console.log(appConfig.showThoughts);
     if (!appConfig.showThoughts) return;
     Toastify({
       text: `<div style="display:flex;align-items:center;gap:10px"><img src="${robotImage}" width="30" height="30" /> ${thought}</div>`,

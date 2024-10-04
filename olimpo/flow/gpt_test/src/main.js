@@ -24,6 +24,10 @@ import {
   getBubbleWhatsappIconTogglerStyles,
 } from "./components/bubble/btnWhatsapp";
 import { Card, getCardStyles } from "./components/chat/chatMessage/card/card";
+import {
+  getRaisedButtonStyles,
+  RaisedButton,
+} from "./components/buttons/filled/raisedButton";
 
 import { appConfig } from "./app-state/config";
 import { theme } from "./app-state/theme";
@@ -100,7 +104,8 @@ export default class Chatbot {
       FabButton,
       MicRecord,
       BtnWhatsapp,
-      Card
+      Card,
+      RaisedButton
     );
 
     const widgetContainer = new WidgetContainer();
@@ -113,8 +118,9 @@ export default class Chatbot {
         getChatInputStyles(theme),
         getChatContainerStyles(theme),
         getBubbleWhatsappIconTogglerStyles(whatsappButtonConfig),
-        getWidgetContainerInlineStyle(),
-        getCardStyles(),
+        getWidgetContainerInlineStyle(theme),
+        getCardStyles(theme),
+        getRaisedButtonStyles(theme),
       ],
     });
     const styles = document.createElement("style");
