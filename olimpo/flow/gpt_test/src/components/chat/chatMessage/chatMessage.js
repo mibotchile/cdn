@@ -8,6 +8,7 @@ import robotImage from "./../../../assets/images/robot.png";
 import agentImage from "./../../../assets/images/agent.png";
 import userImage from "./../../../assets/images/user.png";
 import { theme } from "../../../app-state/theme";
+import { Card } from "./card/card";
 
 const tag = "onbotgo-chatmessage";
 export class chatMessage extends WebComponent {
@@ -74,6 +75,10 @@ export class chatMessage extends WebComponent {
         messageContainer
       );
       messageContainer.innerHTML += message.message;
+    } else if (!message.fileType && message.type === "mapApiMessage") {
+      this.appendChild(this.getAvatarMessage("apiMessage"));
+      const cardMessage = new Card(message);
+      this.appendChild(cardMessage);
     }
     if (message.type === "LoadingMessage") this.setLoadingAnimation();
   }

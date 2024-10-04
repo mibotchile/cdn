@@ -239,7 +239,7 @@ export class ChatContainer extends WebComponent {
               this.chattingWith = "human_agent";
             }
 
-            if (apiMessage?.cards) handleAddressMessages(apiMessage.cards);
+            if (apiMessage?.cards) handleCardMessages(apiMessage.cards);
           })
           .catch((err) => console.log(err))
           .finally(() => {
@@ -279,6 +279,7 @@ export class ChatContainer extends WebComponent {
             this.chattingWith = "human_agent";
           }
           if (apiMessage.thought) this.showBotThought(apiMessage.thought);
+          if (apiMessage?.cards) handleCardMessages(apiMessage.cards);
         })
         .catch((err) => console.log(err))
         .finally(() => {
@@ -292,7 +293,7 @@ export class ChatContainer extends WebComponent {
         });
   }
 
-  handleAddressMessages(cards) {
+  handleCardMessages(cards) {
     cards.forEach(() => {
       if (
         apiMessage.cards.type === "address" &&
@@ -302,11 +303,10 @@ export class ChatContainer extends WebComponent {
         appConfig.callbacks.address({
           ...apiMessage.cards,
           render_map: undefined,
-          type: undefined,
         });
       if (
         apiMessage.cards.type === "address" &&
-        apiMessage.cards.render_map !== "background"
+        apiMessage.cards.render_map === "modal"
       )
         this.addMessages([{ ...apiMessage?.cards, type: "mapApiMessage" }]);
     });

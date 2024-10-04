@@ -23,6 +23,7 @@ import {
   BtnWhatsapp,
   getBubbleWhatsappIconTogglerStyles,
 } from "./components/bubble/btnWhatsapp";
+import { Card, getCardStyles } from "./components/chat/chatMessage/card/card";
 
 import { appConfig } from "./app-state/config";
 import { theme } from "./app-state/theme";
@@ -35,6 +36,8 @@ import { MicRecord } from "./components/chat/record/record";
 import { whatsappButtonConfig } from "./app-state/whatsappButton";
 
 import toastifyStyles from "toastify-js/src/toastify.css?inline";
+import "leaflet/dist/leaflet.css";
+import "leaflet-geosearch/dist/geosearch.css";
 
 export default class Chatbot {
   constructor({
@@ -94,7 +97,8 @@ export default class Chatbot {
       Dropdown,
       FabButton,
       MicRecord,
-      BtnWhatsapp
+      BtnWhatsapp,
+      Card
     );
 
     const widgetContainer = new WidgetContainer();
@@ -108,6 +112,7 @@ export default class Chatbot {
         getChatContainerStyles(theme),
         getBubbleWhatsappIconTogglerStyles(whatsappButtonConfig),
         getWidgetContainerInlineStyle(),
+        getCardStyles(),
       ],
     });
     const styles = document.createElement("style");
