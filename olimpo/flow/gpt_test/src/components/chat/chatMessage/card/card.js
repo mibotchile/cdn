@@ -27,12 +27,10 @@ export class Card extends WebComponent {
       const someDiv = document.getElementById(
         `onbotgo-mapContainer-${mapContainerId}`
       );
-      console.log("before find div");
       if (someDiv) {
         const provider = new GoogleProvider({
-          apiKey: "AIzaSyBCjdZlTczQqOpJw-XVw88hqyVsBfTi7k8",
+          apiKey: import.meta.env.VITE_GOOGLE_MAPS_APIKEY,
         });
-        console.log("after find div");
         provider.search({ query: address }).then(([searchResults]) => {
           console.log(searchResults);
           this.map = leaflet

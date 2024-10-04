@@ -131,8 +131,8 @@
       document.fonts.add(tarjeta_oh_font);
       const chatbot = new Chatbot({
         //PARÁMETRPS REQUERIDOS
-        chatflow: "53f9cadf-9685-44f2-92b4-19be11248274",
-        chathubChannelId: "51943554023",
+        chatflow: import.meta.env.VITE_chatflow,
+        chathubChannelId: import.meta.env.VITE_chathubChannelId,
         projectPath: "/movistar/",
         //PARÁMETROS OPCIONALES
         showThoughts: false,
