@@ -294,11 +294,14 @@ export class ChatContainer extends WebComponent {
   }
 
   handleCardMessages(cards) {
+    const addressCards = [];
     cards.forEach((card) => {
       this.addMessages([card]);
       if (appConfig.callbacks?.address && card.type === "address")
-        appConfig.callbacks?.address(messageData);
+        addressCards.push(messageData);
     });
+    if (appConfig.callbacks?.address)
+      appConfig.callbacks?.address(addressCards);
   }
 
   toggle() {
