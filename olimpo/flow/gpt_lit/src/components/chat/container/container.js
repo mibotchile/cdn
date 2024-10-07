@@ -10,6 +10,7 @@ import { redirectConversation } from "../../../services/websockets/redirect";
 import robotImage from "../../../assets/images/robot.png";
 import Toastify from "toastify-js";
 import { theme } from "../../../app-config/theme";
+import { uploadFile } from "../../../api/uploadFile";
 
 const tag = `onbotgo-chat`;
 
@@ -36,15 +37,62 @@ export class ChatContainer extends LitElement {
     this.isSendingMessage = false;
     this.messagesHistory = [
       { content: appConfig.welcomeMessage, type: "apiMessage" },
+      {
+        response: "Hola , aqui tienes la direccion solicitada:",
+        unique_id: "b71437d4-4794-4192-9d8d-88f1deb1fb52",
+        redirect: false,
+        thought:
+          "El cliente está saludando, por lo que corresponde devolver el saludo.",
+        type: "text",
+        content: null,
+        cards: [
+          {
+            type: "address",
+            id: "1",
+            name: "proyecto brisas del mar",
+            address: "av republica china 298",
+            image_url: "",
+            country: "pe",
+            location: "",
+            data: { proyecto: "valles del campo", precio: "1000", cuartos: 3 },
+            render_map: "background",
+          },
+          {
+            type: "address",
+            id: "2",
+            name: "proyecto manzana verde",
+            address: "av puno calle 21",
+            image_url: "",
+            country: "pe",
+            location: "",
+            data: { proyecto: "valles del campo", precio: "1000", cuartos: 3 },
+            render_map: "modal",
+          },
+        ],
+      },
     ];
   }
 
   async uploadFileHandler(e) {
     if (!e.target.files[0]) return;
-    const type = e.target.files[0].type;
+    const { type } = e.target.files[0];
+    const payload = [
+      {
+        name: e.target.files[0].name,
+        size: e.target.files[0].size,
+        type: e.target.files[0].type,
+        buffer: Array.from(
+          new Uint8Array(await e.target.files[0].arrayBuffer())
+        ),
+      },
+    ];
     this.isUploadingFile = true;
-    const uploadedFile = await handleUploadFile(e);
-    this.attachedFiles = [...this.attachedFiles, { type, ...uploadedFile }];
+    const uploadedFile = await uploadFile(payload);
+    this.attachedFiles = [
+      ...this.attachedFiles,
+      { type, name: uploadedFile.data[0].name, url: uploadedFile.data[0].url },
+    ];
+
     this.isUploadingFile = false;
   }
 
@@ -68,7 +116,12 @@ export class ChatContainer extends LitElement {
       url: (this.attachedFiles || []).map(({ url }) => url),
       unique_id: appConfig.messageHistoryId,
     };
-
+    console.log(
+      payload,
+      this.attachedFiles.length,
+      message,
+      this.attachedRecord
+    );
     if (this.attachedFiles.length) {
       this.addMessageAndUpdateScroll(
         ...this.attachedFiles.map((af) => ({
@@ -114,7 +167,6 @@ export class ChatContainer extends LitElement {
           url: undefined,
         })
           .then((apiMessage) => {
-            // if (!apiMessage.success) throw new Error(apiMessage.msg);
             if (apiMessage?.unique_id) {
               appConfig.messageHistoryId = apiMessage.unique_id;
               console.log(appConfig.messageHistoryId);
@@ -141,6 +193,7 @@ export class ChatContainer extends LitElement {
             if (apiMessage.redirect) {
               this.chattingWith = "human_agent";
             }
+            if (apiMessage?.cards) this.handleCardMessages(apiMessage.cards);
           })
           .catch((err) => console.log(err))
           .finally(() => {
@@ -184,6 +237,17 @@ export class ChatContainer extends LitElement {
           this.updateScrollbar();
           this.isSendingMessage = false;
         });
+  }
+
+  handleCardMessages(cards) {
+    const addressCards = [];
+    cards.forEach((card) => {
+      this.addMessages([card]);
+      if (appConfig.callbacks?.address && card.type === "address")
+        addressCards.push(messageData);
+    });
+    if (appConfig.callbacks?.address)
+      appConfig.callbacks?.address(addressCards);
   }
 
   removeLoadingMessages() {

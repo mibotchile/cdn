@@ -10,6 +10,7 @@ import userImage from "./../../../assets/images/user.png";
 import { theme } from "../../../app-state/theme";
 import { Card } from "./card/card";
 import { RaisedButton } from "../../buttons/filled/raisedButton";
+import { appConfig } from "../../../app-state/config";
 
 const tag = "onbotgo-chatmessage";
 export class chatMessage extends WebComponent {
@@ -88,17 +89,24 @@ export class chatMessage extends WebComponent {
     } else if (
       !message.fileType &&
       message.type === "address" &&
-      message.render_map === "background"
+      message.render_map === "backgroud"
     ) {
       const messageContainer = this.querySelector(".onbotgo-message");
+      messageContainer.style.width = "65%";
       messageContainer.innerHTML += `<span>${message.name}
-                                        <ul>
+                                        <ul style="margin-bottom: 0">
                                           <li>Proyecto: ${message.data.proyecto}</li>
                                           <li>Precio: ${message.data.precio}</li>
                                           <li>Cuartos: ${message.data.cuartos}</li>
                                         </ul>
                                         </span>`;
-      messageContainer.appendChild(new RaisedButton(message));
+      if (
+        ["function"].includes(
+          typeof appConfig.callbacks?.addressButton?.action
+        ) ||
+        appConfig.callbacks?.addressButton?.action instanceof Promise
+      )
+        messageContainer.appendChild(new RaisedButton(message));
       this.insertBefore(this.getAvatarMessage("apiMessage"), messageContainer);
     } else if (
       !message.fileType &&
@@ -106,7 +114,11 @@ export class chatMessage extends WebComponent {
       message.render_map === "modal"
     ) {
     }
-    if (message.type === "LoadingMessage") this.setLoadingAnimation();
+    if (message.type === "LoadingMessage") {
+      const messageContainer = this.querySelector(".onbotgo-message");
+      this.insertBefore(this.getAvatarMessage("apiMessage"), messageContainer);
+      this.setLoadingAnimation();
+    }
   }
 
   handlePlayPause() {
@@ -164,7 +176,7 @@ chatMessage.tag = tag;
 
 export const getChatMessageStyles = (theme) => ({
   [`${tag} .onbotgo-message`]: {
-    width: "fit-content !important",
+    width: "fit-content",
     height: "fit-content",
     "border-radius": "6px",
     "align-items": "center",

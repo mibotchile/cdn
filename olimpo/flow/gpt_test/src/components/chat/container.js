@@ -202,7 +202,9 @@ export class ChatContainer extends WebComponent {
         this.querySelector("input").focus();
         this.messagesContainer
           .querySelectorAll(".loading-api-message")
-          ?.forEach((node) => node.remove());
+          ?.forEach((node) => {
+            node.parentNode.remove();
+          });
         inputElement.disabled = false;
       });
       return;
@@ -239,13 +241,14 @@ export class ChatContainer extends WebComponent {
               this.chattingWith = "human_agent";
             }
 
-            if (apiMessage?.cards) this.handleCardMessages(apiMessage.cards);
+            if (apiMessage?.content?.cards)
+              this.handleCardMessages(apiMessage.content.cards);
           })
           .catch((err) => console.log(err))
           .finally(() => {
             this.messagesContainer
               .querySelectorAll(".loading-api-message")
-              ?.forEach((node) => node.remove());
+              ?.forEach((node) => node.parentNode.remove());
 
             this.updateScrollbar();
             inputElement.disabled = false;
@@ -279,13 +282,14 @@ export class ChatContainer extends WebComponent {
             this.chattingWith = "human_agent";
           }
           if (apiMessage.thought) this.showBotThought(apiMessage.thought);
-          if (apiMessage?.cards) this.handleCardMessages(apiMessage.cards);
+          if (apiMessage?.content?.cards)
+            this.handleCardMessages(apiMessage.content.cards);
         })
         .catch((err) => console.log(err))
         .finally(() => {
           this.messagesContainer
             .querySelectorAll(".loading-api-message")
-            ?.forEach((node) => node.remove());
+            ?.forEach((node) => node.parentNode.remove());
           inputElement.disabled = false;
           this.getChild("#onbotgo-chatinput").style.backgroundColor = "white";
           inputElement.focus();
@@ -298,7 +302,7 @@ export class ChatContainer extends WebComponent {
     cards.forEach((card) => {
       this.addMessages([card]);
       if (appConfig.callbacks?.address && card.type === "address")
-        addressCards.push(messageData);
+        addressCards.push(card);
     });
     if (appConfig.callbacks?.address)
       appConfig.callbacks?.address(addressCards);

@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import { resolve } from "path";
 
 export default defineConfig({
   server: {
@@ -6,6 +7,14 @@ export default defineConfig({
     port: 5173,
     watch: {
       usePolling: true,
+    },
+  },
+  build: {
+    lib: {
+      entry: resolve(__dirname, "src/main.js"),
+      name: "onbotgo_gpt",
+      formats: ["es"],
+      fileName: "onbotgo_gpt.min",
     },
   },
 });

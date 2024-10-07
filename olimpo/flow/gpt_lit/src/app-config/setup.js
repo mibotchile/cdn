@@ -4,6 +4,8 @@ class appSetupConfig {
   messageHistoryId = "";
   chathubChannelId = "";
   projectPath = "/";
+  ssl = true;
+  googleApikey = "";
 }
 
 export const appConfig = new appSetupConfig();

@@ -2,8 +2,6 @@ import { WebComponent } from "../../../webComponent";
 import leaflet from "leaflet";
 import { GoogleProvider } from "leaflet-geosearch";
 import { appConfig } from "../../../../app-state/config";
-import { Box } from "../../../box/box";
-import { theme } from "../../../../app-state/theme";
 import { RaisedButton } from "../../../buttons/filled/raisedButton";
 export class Card extends WebComponent {
   map;

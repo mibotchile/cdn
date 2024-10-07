@@ -97,7 +97,7 @@ export class AttachFile extends LitElement {
         style="display: none"
       />
       ${buttonTemplate}
-      ${this.isDropdownShowing
+      ${this.isDropdownShowing && this.attachedFiles.length
         ? html`<onbotgo-dropdowncontent>
         ${this.attachedFiles.map((file) => {
           return html`<onbotgo-box class="onbotgo-attachedFile">
