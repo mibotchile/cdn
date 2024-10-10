@@ -27,9 +27,18 @@
       socketUid: "",
 
       //PARÁMETROS OPCIONALES
+      callbacks: {
+        // address: () => alert("address"),
+        addressButton: {
+          text: "Ver mapa",
+          action: (e) => {
+            alert(`hola mundo ${e.location.lat}`);
+          },
+        },
+      },
       whatsappButton: {
-        active: true,
-        number: "51943554023",
+        active: false,
+        number: "",
         position: "br",
         message: "Hola mundo!",
       },
@@ -50,7 +59,7 @@
         `, // Valor por defecto
         typography: { primary: "'tarjeta_oh'" }, // Valor por defecto
         colors: {
-          primary: "#f9344a", // Valor por defecto
+          primary: "rgb(242, 144, 3)", // Valor por defecto
         },
       },
     });

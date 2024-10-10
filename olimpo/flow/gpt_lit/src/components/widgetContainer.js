@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { whatsappButtonConfig } from "../app-config/whatsappButton";
+import "leaflet/dist/leaflet.css";
 
 export class WidgetContainer extends LitElement {
   static styles = css`
@@ -18,7 +19,7 @@ export class WidgetContainer extends LitElement {
   static properties = {
     isChatShowing: { type: Boolean },
   };
-
+  static shadowRootOptions = { ...LitElement.shadowRootOptions, mode: "open" };
   constructor() {
     super();
     this.isChatShowing = true;
@@ -26,23 +27,25 @@ export class WidgetContainer extends LitElement {
 
   render() {
     return html`
-      <onbotgo-chat
-        style=${`display: ${
-          this.isChatShowing ? "inline-block" : "none"
-        };margin-bottom: ${
-          whatsappButtonConfig.active &&
-          whatsappButtonConfig.position === "br" &&
-          "calc(4dvh + 20px)"
-        };`}
-      ></onbotgo-chat>
-      <onbotgo-bubble
-        style=${`margin-bottom: ${
-          whatsappButtonConfig.active &&
-          whatsappButtonConfig.position === "br" &&
-          "calc(4dvh + 20px)"
-        };`}
-        @click=${() => (this.isChatShowing = !this.isChatShowing)}
-      ></onbotgo-bubble>
+      <div style="height:100%">
+        <onbotgo-chat
+          style=${`display: ${
+            this.isChatShowing ? "inline-block" : "none"
+          };margin-bottom: ${
+            whatsappButtonConfig.active &&
+            whatsappButtonConfig.position === "br" &&
+            "calc(4dvh + 20px)"
+          };`}
+        ></onbotgo-chat>
+        <onbotgo-bubble
+          style=${`margin-bottom: ${
+            whatsappButtonConfig.active &&
+            whatsappButtonConfig.position === "br" &&
+            "calc(4dvh + 20px)"
+          };`}
+          @click=${() => (this.isChatShowing = !this.isChatShowing)}
+        ></onbotgo-bubble>
+      </div>
     `;
   }
 }

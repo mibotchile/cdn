@@ -10,14 +10,17 @@ import "./components/chat/container/container.js";
 import "./components/chat/chatInput/chatInput.js";
 import "./components/chat/attachFile/attachFile.js";
 import "./components/chat/chatMessage/chatMessage.js";
+import "./components/chat/chatMessage/interactiveMessages/googleMaps.js";
 import "./components/shared/box/box.js";
 import "./components/shared/buttons/icon/iconButton.js";
 import "./components/shared/buttons/fab/raisedButton.js";
+import "./components/shared/buttons/raised/raisedButton.js";
 import "./components/shared/spinner/spinner.js";
 import "./components/shared/dropdown/dropdown.js";
 import "./components/shared/dropdown/dropdownContent.js";
 
-import toastifyStyles from "toastify-js/src/toastify.css?inline";
+import "toastify-js/src/toastify.css";
+import "leaflet/dist/leaflet.css";
 
 export default class Chatbot {
   constructor({
@@ -29,6 +32,8 @@ export default class Chatbot {
     ssl,
     whatsappButton,
     googleApikey,
+    callbacks,
+    showThoughts,
   }) {
     let root = document.querySelector(":root");
 
@@ -39,6 +44,10 @@ export default class Chatbot {
     if (ssl) appConfig.ssl = ssl;
     if (welcomeMessage) appConfig.welcomeMessage = welcomeMessage;
     if (googleApikey) appConfig.googleApikey = googleApikey;
+    if (callbacks) appConfig.callbacks = callbacks;
+    if (googleApikey) appConfig.googleApikey = googleApikey;
+    if ([false, true].includes(showThoughts))
+      appConfig.showThoughts = showThoughts;
     if (!customTheme) return;
     const { typography, colors, icon } = customTheme;
     if (whatsappButton?.active) {
@@ -65,9 +74,8 @@ export default class Chatbot {
   init() {
     const widget = document.createElement("onbotgo-chatwidget");
 
-    let whatsappButton;
     if (whatsappButtonConfig.active) {
-      whatsappButton = document.createElement("onbotgo-whatsappbubble");
+      const whatsappButton = document.createElement("onbotgo-whatsappbubble");
       if (whatsappButtonConfig.position.includes("t"))
         whatsappButton.style.top = "min(2%, 2dvh)";
       if (whatsappButtonConfig.position.includes("l"))
@@ -81,12 +89,9 @@ export default class Chatbot {
           `https://wa.me/${whatsappButtonConfig.number}?text=${whatsappButtonConfig.message}`
         );
       };
+      document.body.appendChild(whatsappButton);
     }
 
-    const styles = document.createElement("style");
-    styles.innerHTML = toastifyStyles;
-    widget.prepend(styles);
     document.body.appendChild(widget);
-    document.body.appendChild(whatsappButton);
   }
 }

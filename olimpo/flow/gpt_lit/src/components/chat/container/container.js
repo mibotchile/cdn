@@ -36,40 +36,7 @@ export class ChatContainer extends LitElement {
     this.attachedFiles = [];
     this.isSendingMessage = false;
     this.messagesHistory = [
-      { content: appConfig.welcomeMessage, type: "apiMessage" },
-      {
-        response: "Hola , aqui tienes la direccion solicitada:",
-        unique_id: "b71437d4-4794-4192-9d8d-88f1deb1fb52",
-        redirect: false,
-        thought:
-          "El cliente está saludando, por lo que corresponde devolver el saludo.",
-        type: "text",
-        content: null,
-        cards: [
-          {
-            type: "address",
-            id: "1",
-            name: "proyecto brisas del mar",
-            address: "av republica china 298",
-            image_url: "",
-            country: "pe",
-            location: "",
-            data: { proyecto: "valles del campo", precio: "1000", cuartos: 3 },
-            render_map: "background",
-          },
-          {
-            type: "address",
-            id: "2",
-            name: "proyecto manzana verde",
-            address: "av puno calle 21",
-            image_url: "",
-            country: "pe",
-            location: "",
-            data: { proyecto: "valles del campo", precio: "1000", cuartos: 3 },
-            render_map: "modal",
-          },
-        ],
-      },
+      { response: appConfig.welcomeMessage, from: "api", type: "text" },
     ];
   }
 
@@ -116,16 +83,11 @@ export class ChatContainer extends LitElement {
       url: (this.attachedFiles || []).map(({ url }) => url),
       unique_id: appConfig.messageHistoryId,
     };
-    console.log(
-      payload,
-      this.attachedFiles.length,
-      message,
-      this.attachedRecord
-    );
+
     if (this.attachedFiles.length) {
       this.addMessageAndUpdateScroll(
         ...this.attachedFiles.map((af) => ({
-          type: "userMessage",
+          from: "user",
           file: af,
           fileType: af.type.includes("image") ? "image" : af.type,
         }))
@@ -135,14 +97,18 @@ export class ChatContainer extends LitElement {
 
     if (this.attachedRecord)
       this.addMessageAndUpdateScroll({
-        type: "userMessage",
+        from: "user",
         file: this.attachedRecord,
         fileType: "audio",
       });
     if (message)
-      this.addMessageAndUpdateScroll({ content: message, type: "userMessage" });
+      this.addMessageAndUpdateScroll({
+        type: "text",
+        response: message,
+        from: "user",
+      });
 
-    this.addMessageAndUpdateScroll({ type: "loadingApiMessage" });
+    this.addMessageAndUpdateScroll({ type: "loadingMessage", from: "api" });
 
     this.attachedRecord = null;
     this.isSendingMessage = true;
@@ -169,7 +135,6 @@ export class ChatContainer extends LitElement {
           .then((apiMessage) => {
             if (apiMessage?.unique_id) {
               appConfig.messageHistoryId = apiMessage.unique_id;
-              console.log(appConfig.messageHistoryId);
               redirectWebSocket.init(appConfig.messageHistoryId);
               redirectWebSocket.onIncomingMessage((message) =>
                 this.addMessageAndUpdateScroll(message)
@@ -180,20 +145,21 @@ export class ChatContainer extends LitElement {
                 this.addMessageAndUpdateScroll({
                   type: process.role,
                   name: process.name,
-                  content: process.content,
+                  response: process.content,
                 });
               });
 
             this.addMessageAndUpdateScroll({
-              content: apiMessage.response,
-              type: "apiMessage",
+              type: "text",
+              ...apiMessage,
+              from: "api",
             });
 
-            if (apiMessage.thought) this.showBotThought(apiMessage.thought);
+            if (apiMessage.thought && appConfig.showThoughts)
+              this.showBotThought(apiMessage.thought);
             if (apiMessage.redirect) {
               this.chattingWith = "human_agent";
             }
-            if (apiMessage?.cards) this.handleCardMessages(apiMessage.cards);
           })
           .catch((err) => console.log(err))
           .finally(() => {
@@ -217,13 +183,14 @@ export class ChatContainer extends LitElement {
               this.addMessageAndUpdateScroll({
                 type: process.role,
                 name: process.name,
-                content: process.content,
+                response: process.content,
               });
             });
 
           this.addMessageAndUpdateScroll({
-            content: apiMessage.response,
-            type: "apiMessage",
+            type: "text",
+            ...apiMessage,
+            from: "api",
           });
 
           if (apiMessage.redirect) {
@@ -239,20 +206,9 @@ export class ChatContainer extends LitElement {
         });
   }
 
-  handleCardMessages(cards) {
-    const addressCards = [];
-    cards.forEach((card) => {
-      this.addMessages([card]);
-      if (appConfig.callbacks?.address && card.type === "address")
-        addressCards.push(messageData);
-    });
-    if (appConfig.callbacks?.address)
-      appConfig.callbacks?.address(addressCards);
-  }
-
   removeLoadingMessages() {
     this.messagesHistory = this.messagesHistory.filter(
-      ({ type }) => type !== "loadingApiMessage"
+      ({ type }) => type !== "loadingMessage"
     );
   }
 
@@ -292,9 +248,9 @@ export class ChatContainer extends LitElement {
     return html`<onbotgo-box id="onbotgo-chatheader"> </onbotgo-box>
       <onbotgo-box id="onbotgo-messageContainer">
         ${this.messagesHistory.map(
-          (messageHistory) =>
+          (message) =>
             html`<onbotgo-chatmessage
-              .message=${messageHistory}
+              .message=${message}
             ></onbotgo-chatmessage>`
         )}
       </onbotgo-box>

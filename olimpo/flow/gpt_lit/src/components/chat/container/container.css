@@ -2,14 +2,14 @@
   bottom: 60px;
   right: 10px;
   position: absolute;
-  display: flex;
+  display: flex !important;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 5px 40px;
   flex-direction: column;
   width: 400px;
   gap: 10px;
   max-width: calc(100vw - 90px);
   max-height: 704px;
-  height: 70vh;
+  height: 70dvh;
   background-color: white;
   border-radius: 8px;
   padding-bottom: 10px;
@@ -30,20 +30,15 @@
   background: #a4a4a4;
 }
 
-.onbotgo-chat-footer {
-  display: flex !important;
-  align-items: "center";
-  justify-content: flex-end;
-  gap: "5px";
-}
 .onbotgo-icon-paperclip path {
   stroke: var(--onbotgo-color-primary);
 }
 #onbotgo-chatheader {
-  padding: 20px;
-  max-width: calc(100% - 40px);
+  height: 40px;
+  display: inline-block;
+  width: 100%;
   border-radius: 8px 8px 0 0;
-  width: 100% !important;
+  background-color: var(--onbotgo-color-primary);
 }
 #onbotgo-messageContainer {
   height: calc(100% - 120px);
@@ -78,10 +73,11 @@ onbotgo-chatinput {
 .onbotgo-chat-footer {
   color: #a1a1a1;
   font-size: 10px;
-  padding: 7px 10px;
+  padding: 0px 10px;
   vertical-align: middle;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 }
 #onbotgo-btnrecordSend,
 #onbotgo-btnrecord {

@@ -6,6 +6,9 @@ class appSetupConfig {
   projectPath = "/";
   ssl = true;
   googleApikey = "";
+  showThoughts = true;
+  callbacks = {};
+  googleApikey = "";
 }
 
 export const appConfig = new appSetupConfig();
