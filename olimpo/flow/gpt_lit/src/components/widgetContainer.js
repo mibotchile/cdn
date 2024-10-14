@@ -19,7 +19,6 @@ export class WidgetContainer extends LitElement {
   static properties = {
     isChatShowing: { type: Boolean },
   };
-  static shadowRootOptions = { ...LitElement.shadowRootOptions, mode: "open" };
   constructor() {
     super();
     this.isChatShowing = true;
@@ -30,8 +29,8 @@ export class WidgetContainer extends LitElement {
       <div style="height:100%">
         <onbotgo-chat
           style=${`display: ${
-            this.isChatShowing ? "inline-block" : "none"
-          };margin-bottom: ${
+            this.isChatShowing ? "flex !important;" : "none;"
+          }margin-bottom: ${
             whatsappButtonConfig.active &&
             whatsappButtonConfig.position === "br" &&
             "calc(4dvh + 20px)"

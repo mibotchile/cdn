@@ -2,7 +2,6 @@
   bottom: 60px;
   right: 10px;
   position: absolute;
-  display: flex !important;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 5px 40px;
   flex-direction: column;
   width: 400px;
