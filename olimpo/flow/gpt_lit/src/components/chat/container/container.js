@@ -196,7 +196,8 @@ export class ChatContainer extends LitElement {
           if (apiMessage.redirect) {
             this.chattingWith = "human_agent";
           }
-          if (apiMessage.thought) this.showBotThought(apiMessage.thought);
+          if (apiMessage.thought && appConfig.showThoughts)
+            this.showBotThought(apiMessage.thought);
         })
         .catch((err) => console.log(err))
         .finally(() => {

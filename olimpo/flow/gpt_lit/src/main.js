@@ -19,8 +19,7 @@ import "./components/shared/spinner/spinner.js";
 import "./components/shared/dropdown/dropdown.js";
 import "./components/shared/dropdown/dropdownContent.js";
 
-import "toastify-js/src/toastify.css";
-import "leaflet/dist/leaflet.css";
+import toastifyStyles from "toastify-js/src/toastify.css?inline";
 
 export default class Chatbot {
   constructor({
@@ -92,6 +91,9 @@ export default class Chatbot {
       document.body.appendChild(whatsappButton);
     }
 
+    const inlineStyles = document.createElement("style");
+    inlineStyles.innerHTML += toastifyStyles;
+    document.body.appendChild(inlineStyles);
     document.body.appendChild(widget);
   }
 }

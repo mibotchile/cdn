@@ -75,7 +75,7 @@ export class InteractiveMapFile extends LitElement {
         )
           this.template = html` <link
               rel="stylesheet"
-              href="https://cdn.skypack.dev/leaflet/dist/leaflet.css"
+              href="https://cdn.jsdelivr.net/gh/mibotchile/cdn@v0.7.19/olimpo/flow/gpt_lit/dist/style.css"
             /><onbotgo-box
               >${mapContainer} ${this.mapActionButton}</onbotgo-box
             >`;
@@ -86,7 +86,7 @@ export class InteractiveMapFile extends LitElement {
 
   render() {
     switch (this.cardInfo.render_map) {
-      case "background":
+      case "backgroud":
         return this.backgroundMap;
       case "modal":
         if (!this.isSearching) this.modalMap();
