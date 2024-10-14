@@ -286,14 +286,14 @@ export class ChatContainer extends LitElement {
         >
           ${parseStringToHtml(sendIcon)}
         </onbotgo-iconbutton>
-        <onbotgo-iconbutton
+        <!-- <onbotgo-iconbutton
           id="onbotgo-btnrecord"
           size="medium"
           color="primary"
           style=${`display: ${this.isMicShowing ? "none" : "grid"}`}
         >
           ${parseStringToHtml(micIcon)}
-        </onbotgo-iconbutton>
+        </onbotgo-iconbutton> -->
       </onbotgo-box>
       <onbotgo-box class="onbotgo-chat-footer">
         Powered by ONBOTGO LLC. ${parseStringToHtml(logo)}
